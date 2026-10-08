@@ -7,3 +7,7 @@
   * Maybe an extension of this question: which variables in general are more associated with those who prefer research/industry?
     * Clustering
     * Heat maps?
+
+* Relationship between double majors and reported domain specialization
+
+* What factors affect the spikes in time taken to complete the survey? Feature engineering a date variable.
