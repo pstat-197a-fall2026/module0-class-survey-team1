@@ -18,7 +18,7 @@ Use this as a template. Keep the headers and remove all other text. Overall, you
 
 ```{r}
 # load any other packages and read data here
-library(tidyverse)
+library(tidyverse) 
 ```
 
 ## Executive summary
