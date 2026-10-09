@@ -1,4 +1,15 @@
-* What course (taken/not taken) has the most difference in perceived ability scores? (multivariable linear regression)
+ANALYSIS PLAN
+
+For each selected question, record:
+
+Exact variables, files, and respondents included
+Data preparation needed
+Summaries, plots, or models to try and what their output would tell you
+Key choices to check, such as denominators, coding, scaling, or number of clusters
+One limitation you will need to discuss
+
+
+*What course (taken/not taken) has the most difference in perceived ability scores? (multivariable linear regression)
   * Does total amount of upper division classes taken affect perceived ability scores?
     * Simple Linear Regression?
 
