@@ -75,3 +75,69 @@ background %>%
   labs(x = 'Comfort score (1 = low, 5 = high)', y = 'Number of students',
        title = 'Distribution of self-rated comfort') +
   theme_minimal()
+
+## EDA: course data
+# one row per student-course pair
+course_long <- background %>%
+  select(response_id, courses) %>%
+  separate_rows(courses, sep = ',\\s*') %>%
+  mutate(courses = str_trim(courses)) %>%
+  filter(courses != '') %>%
+  distinct(response_id, courses)
+
+# how many students took each course
+course_counts <- course_long %>%
+  count(courses, name = 'n') %>%
+  arrange(desc(n))
+
+course_counts
+
+
+## how many students took each course
+course_counts %>%
+  ggplot(aes(x = n, y = fct_reorder(courses, n))) +
+  geom_col(fill = '#0072B2') +
+  geom_text(aes(label = n), hjust = -0.3, size = 3) +
+  geom_vline(xintercept = nrow(background), linetype = 'dashed') +   # all 51
+  labs(x = 'Number of students who took it', y = NULL,
+       title = 'Courses taken by students (dashed line = all 51)') +
+  theme_minimal()
+
+
+## upper-division course counts
+background %>%
+  ggplot(aes(x = upper_div_courses)) +
+  geom_bar(fill = '#0072B2', width = 0.6) +
+  geom_text(stat = 'count', aes(label = after_stat(count)), vjust = -0.5) +
+  labs(x = 'Upper-division courses taken', y = 'Number of students',
+       title = 'Upper-division course counts') +
+  theme_minimal()
+
+
+## heat map of which courses are taken together
+# wide table: one row per student, one 0/1 column per course
+course_wide <- course_long %>%
+  mutate(taken = 1) %>%
+  pivot_wider(names_from = courses, values_from = taken, values_fill = 0)
+
+# correlation between every pair of courses
+course_order <- course_counts$courses    # most to least common
+
+course_cor <- course_wide %>%
+  select(-response_id) %>%
+  cor() %>%
+  as_tibble(rownames = 'course1') %>%
+  pivot_longer(-course1, names_to = 'course2', values_to = 'r') %>%
+  mutate(course1 = factor(course1, levels = course_order),
+         course2 = factor(course2, levels = rev(course_order)))
+
+course_cor %>%
+  ggplot(aes(x = course1, y = course2, fill = r)) +
+  geom_tile(color = 'white') +
+  geom_text(aes(label = round(r, 2)), size = 2.2) +
+  scale_fill_gradient2(low = '#2166AC', mid = 'white', high = '#B2182B',
+                       midpoint = 0, limits = c(-1, 1)) +
+  labs(x = NULL, y = NULL, fill = 'Correlation',
+       title = 'Which courses tend to be taken together') +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
