@@ -35,25 +35,22 @@ background %>% count(upper_div_courses)
 
 # mini eda 
 ## EDA: proficiency by number of upper-division courses
-# merge 3-5 into 6-8 (only 2 students in 3-5)
-background <- background %>%
-  mutate(upper_div_group = fct_collapse(upper_div_courses,
-                                        '8 or fewer' = c('3-5', '6-8'),
-                                        '9+' = '9+'))
-
 background %>%
-  select(upper_div_group, prog.prof, math.prof, stat.prof) %>%
-  pivot_longer(-upper_div_group, names_to = 'skill', values_to = 'level') %>%
+  select(upper_div_courses, prog.prof, math.prof, stat.prof) %>%
+  pivot_longer(-upper_div_courses, names_to = 'skill', values_to = 'level') %>%
   mutate(skill = recode(skill, prog.prof = 'Programming',
                         math.prof = 'Math', stat.prof = 'Statistics'),
          skill = factor(skill, levels = c('Programming', 'Math', 'Statistics'))) %>%
-  ggplot(aes(x = upper_div_group, fill = level)) +
+  ggplot(aes(x = upper_div_courses, fill = level)) +
   geom_bar(position = position_fill(reverse = TRUE)) +   # beg at bottom
   facet_wrap(~ skill) +
+  scale_x_discrete(labels = c('3-5' = '3-5\n(n=2)',       # show group sizes
+                              '6-8' = '6-8\n(n=19)',
+                              '9+'  = '9+\n(n=30)')) +
   scale_y_continuous(labels = scales::percent) +
-  scale_fill_manual(values = c(beg = '#E69F00',          # orange
-                               int = '#999999',          # gray
-                               adv = '#0072B2'),         # blue
+  scale_fill_manual(values = c(beg = '#E69F00',
+                               int = '#999999',
+                               adv = '#0072B2'),
                     labels = c(beg = 'Beginner',
                                int = 'Intermediate',
                                adv = 'Advanced')) +
@@ -62,3 +59,19 @@ background %>%
        title = 'Self-rated proficiency by number of upper-division courses') +
   theme_minimal()
 
+
+
+## EDA: distribution of comfort scores
+background %>%
+  select(prog.comf, math.comf, stat.comf) %>%
+  pivot_longer(everything(), names_to = 'skill', values_to = 'comfort') %>%
+  mutate(skill = recode(skill, prog.comf = 'Programming',
+                        math.comf = 'Math', stat.comf = 'Statistics'),
+         skill = factor(skill, levels = c('Programming', 'Math', 'Statistics'))) %>%
+  ggplot(aes(x = comfort)) +
+  geom_histogram(binwidth = 1, fill = '#0072B2', color = 'white') +
+  facet_wrap(~ skill) +
+  scale_x_continuous(breaks = 1:5, limits = c(0.5, 5.5)) +
+  labs(x = 'Comfort score (1 = low, 5 = high)', y = 'Number of students',
+       title = 'Distribution of self-rated comfort') +
+  theme_minimal()
