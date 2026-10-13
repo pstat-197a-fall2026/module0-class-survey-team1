@@ -351,3 +351,32 @@ bind_rows(
 
 
 # not much difference in conclusion
+
+
+## model with ALL courses 
+q1_data_all <- background %>%
+  select(response_id, prof_avg) %>%
+  left_join(course_wide_clean, by = 'response_id')
+
+# '.' = every column except the ones removed with '-'
+q1_model_all <- lm(prof_avg ~ . - response_id, data = q1_data_all)
+
+summary(q1_model_all)
+
+q1_coefs_all <- tidy(q1_model_all, conf.int = TRUE) %>%
+  filter(term != '(Intercept)') %>%
+  arrange(desc(estimate))
+
+q1_coefs_all
+
+q1_coefs_all %>%
+  ggplot(aes(x = estimate, y = fct_reorder(term, estimate))) +
+  geom_vline(xintercept = 0, linetype = 'dashed', color = 'gray50') +
+  geom_errorbar(aes(xmin = conf.low, xmax = conf.high),
+                width = 0.2, orientation = 'y') +
+  geom_point(size = 2.5, color = '#0072B2') +
+  labs(x = 'Difference in average proficiency (took vs. did not take)',
+       y = NULL, title = 'All 18 courses') +
+  theme_minimal()
+
+# no difference in conclusion nothing is statistically significant
