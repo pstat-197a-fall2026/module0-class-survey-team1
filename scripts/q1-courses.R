@@ -64,7 +64,7 @@ background %>%
 # classes taken before the capstone series
 # statistics had more advance scores, this makes sense since most of the class
 # body are statistics majors
-# Programming had the most beginner responses among the lower end upper div classes taken
+# Programming had the only beginner responses among the lower end upper div classes taken
 # this makes sense as there are not many programming-centric classes in the p tat
 # department, most of R or python could have been learned throughout the major
 
@@ -141,9 +141,9 @@ background %>%
   labs(x = 'Upper-division courses taken', y = 'Number of students',
        title = 'Upper-division course counts') +
   theme_minimal()
-# more than have the student population have taken  more than 9 upperdiv coursesw
-# and almost all students have taken more than 6
-# only 2 students have taken at most 5 upperdiv courses, this may have inadverdantly 
+# more than have the student population have taken at lest 9 upperdiv courses
+# and almost all students have taken at least 6
+# only 2 students have taken at most 5 upperdiv courses, this may have inadvertently 
 # exposed juniors in the course, or anyone on their last year who is finishing up all
 # their final elective units along with the capstone series
 
@@ -177,7 +177,7 @@ course_cor %>%
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-# courses like cs16 and cs9 make sense to have a very high negative correlation as 
+# courses like cs16 and cs9 make sense to have moderate negative correlation as 
 # our major sheet allows one or the other to be taken (with cs9 preference)
 
 # classes with high or low correlations could be a tested to by the fact that
@@ -266,3 +266,194 @@ print(difference_plot)
 
 # These patterns suggest that coursework-proficiency associations exist
 # but small comparison groups and overlapping course histories might limit interpretation
+
+
+
+
+#Building Score-------
+
+# building the ability score
+## BUILDING THE SCORES: options considered
+# overall averages (one score per student):
+#   prof_avg = avg of 3 proficiency scores (1-3 scale, only 5 possible values)
+#   comf_avg = avg of 3 comfort scores (1-5 scale, 8 possible values)
+#   + one simple model answers "which course has the biggest difference"
+#   - blends skills together; EDA showed programming and stats behave differently
+#
+# per-skill scores (three scores per student):
+#   prog/math/stat proficiency (.prof.num) or comfort (.comf)
+#   + shows which course goes with which skill (e.g. CS 9 -> programming)
+#   - 3 models to run; math and stat proficiency only have 2 values (int/adv)
+#
+# proficiency vs comfort:
+#   proficiency is closer to "perceived ability" but has little spread
+#   comfort has more spread, better suited to regression
+# 
+#
+# caveats:
+#   beg/int/adv = 1/2/3 assumes equal spacing
+#   most students rate themselves high
+#   self reported reflects confidence, not tested ability
+#
+# plan:
+#   main  -> prof_avg or comf_avg (pick one, justify)
+#   check -> same model on the other average, see if results agree
+#   extra -> per-skill comfort models to see which courses go with which skill
+
+## build score: overall proficiency average
+# prof_avg as the main outcome
+# (closest to perceived ability (comfort and per-skill options group members ? :O)
+background <- background %>%
+  mutate(prof_avg = (prog.prof.num + math.prof.num + stat.prof.num) / 3)
+
+# check the new score
+summary(background$prof_avg)
+background %>% count(prof_avg)
+
+# quick look at the distribution
+background %>%
+  ggplot(aes(x = prof_avg)) +
+  geom_bar(fill = '#0072B2') +
+  labs(x = 'Average proficiency (1 = beginner, 3 = advanced)',
+       y = 'Number of students',
+       title = 'Overall self-rated proficiency') +
+  theme_minimal()
+
+
+# prof_avg = (programming + math + stats) / 3, with beg = 1, int = 2, adv = 3
+# example: int, int, adv -> (2 + 2 + 3) / 3 = 2.33
+# each student's proficiency answers converted to numbers: beg = 1, int = 2, adv = 3
+
+#   drop PSTAT 120, 122, 126: prerequisites, nearly everyone took them
+#   drop courses taken by 3 or fewer students (LING 110, LING 104, GEOG 186, CS 130)
+#   keep everything else for now
+course_wide_clean <- course_wide %>%
+  rename_with(~ str_remove_all(.x, ' '), -response_id)
+
+course_split <- course_counts %>%
+  mutate(taken = n,
+         not_taken = nrow(background) - n) %>%
+  select(courses, taken, not_taken)
+
+keep_courses <- course_split %>%
+  filter(!courses %in% c('PSTAT 120', 'PSTAT 122', 'PSTAT 126'),
+         taken > 3) %>%
+  pull(courses) %>%
+  str_remove_all(' ')
+
+keep_courses   # expect 11 courses
+
+# regression data: one row per student, score + kept courses
+q1_data <- background %>%
+  select(response_id, prof_avg, upper_div_courses) %>%
+  left_join(course_wide_clean %>% select(response_id, all_of(keep_courses)),
+            by = 'response_id')
+
+nrow(q1_data)   # expect 51
+glimpse(q1_data)
+
+q1_model <- lm(prof_avg ~ PSTAT131 + CS9 + PSTAT160 + PSTAT100 + PSTAT134 +
+                 PSTAT174 + CS16 + PSTAT115 + PSTAT127 + PSTAT175 + CS5,
+               data = q1_data)
+
+summary(q1_model)
+
+# coefficients with 95% confidence intervals, largest first
+q1_coefs <- tidy(q1_model, conf.int = TRUE) %>%
+  filter(term != '(Intercept)') %>%
+  arrange(desc(estimate))
+
+q1_coefs
+
+# coefficient plot
+q1_coefs %>%
+  ggplot(aes(x = estimate, y = fct_reorder(term, estimate))) +
+  geom_vline(xintercept = 0, linetype = 'dashed', color = 'gray50') +
+  geom_errorbar(aes(xmin = conf.low, xmax = conf.high), width = 0.2, orientation = 'y') +
+  geom_point(size = 2.5, color = '#0072B2') +
+  labs(x = 'Difference in average proficiency (took vs. did not take)',
+       y = NULL,
+       title = 'Course-taking and self-rated proficiency',
+       subtitle = 'Points = estimates, bars = 95% confidence intervals') +
+  theme_minimal()
+
+
+
+# immediate analysis
+
+# results:
+# no course showed a statistically significant difference in prof_avg (all p > 0.05)
+# PSTAT 131 had the largest difference (+0.37, p = 0.06), but only 5 of 51
+#   students had not taken it, so the estimate compares 46 students to 5
+#   and is not reliable
+# the overall model was not significant (p = 0.47, adjusted R^2 ~ 0)
+# two possible explanations:
+#   1. small sample (n = 51, 11 predictors) -> too little power to detect effects
+#   2. courses taken may have little connection to self-rated proficiency
+# we can't tell these apart with this data; results should be read as exploratory
+
+## robustness check: refit with only the larger courses
+# dropped PSTAT 131 (only 5 non-takers) and PSTAT 115, 127, 175, CS 5 (5-7 takers)
+# kept courses with at least 11 students in both the taken and not-taken groups
+q1_model_small <- lm(prof_avg ~ CS9 + PSTAT160 + PSTAT100 + PSTAT134 +
+                       PSTAT174 + CS16,
+                     data = q1_data)
+
+summary(q1_model_small)
+
+q1_coefs_small <- tidy(q1_model_small, conf.int = TRUE) %>%
+  filter(term != '(Intercept)') %>%
+  arrange(desc(estimate))
+
+q1_coefs_small
+
+# compare both models in one plot
+bind_rows(
+  q1_coefs %>% mutate(model = 'All 11 courses'),
+  q1_coefs_small %>% mutate(model = 'Larger 6 courses')
+) %>%
+  ggplot(aes(x = estimate, y = fct_reorder(term, estimate), color = model)) +
+  geom_vline(xintercept = 0, linetype = 'dashed', color = 'gray50') +
+  geom_errorbar(aes(xmin = conf.low, xmax = conf.high),
+                width = 0.2, orientation = 'y',
+                position = position_dodge(width = 0.5)) +
+  geom_point(size = 2.5, position = position_dodge(width = 0.5)) +
+  scale_color_manual(values = c('All 11 courses' = '#999999',
+                                'Larger 6 courses' = '#0072B2')) +
+  labs(x = 'Difference in average proficiency (took vs. did not take)',
+       y = NULL, color = NULL,
+       title = 'Course-taking and self-rated proficiency') +
+  theme_minimal() +
+  theme(legend.position = 'bottom')
+
+
+# not much difference in conclusion
+
+
+## model with ALL courses 
+q1_data_all <- background %>%
+  select(response_id, prof_avg) %>%
+  left_join(course_wide_clean, by = 'response_id')
+
+# '.' = every column except the ones removed with '-'
+q1_model_all <- lm(prof_avg ~ . - response_id, data = q1_data_all)
+
+summary(q1_model_all)
+
+q1_coefs_all <- tidy(q1_model_all, conf.int = TRUE) %>%
+  filter(term != '(Intercept)') %>%
+  arrange(desc(estimate))
+
+q1_coefs_all
+
+q1_coefs_all %>%
+  ggplot(aes(x = estimate, y = fct_reorder(term, estimate))) +
+  geom_vline(xintercept = 0, linetype = 'dashed', color = 'gray50') +
+  geom_errorbar(aes(xmin = conf.low, xmax = conf.high),
+                width = 0.2, orientation = 'y') +
+  geom_point(size = 2.5, color = '#0072B2') +
+  labs(x = 'Difference in average proficiency (took vs. did not take)',
+       y = NULL, title = 'All 18 courses') +
+  theme_minimal()
+
+# no difference in conclusion nothing is statistically significant
