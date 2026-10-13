@@ -315,4 +315,39 @@ q1_coefs %>%
 #   2. courses taken may have little connection to self-rated proficiency
 # we can't tell these apart with this data; results should be read as exploratory
 
+## robustness check: refit with only the larger courses
+# dropped PSTAT 131 (only 5 non-takers) and PSTAT 115, 127, 175, CS 5 (5-7 takers)
+# kept courses with at least 11 students in both the taken and not-taken groups
+q1_model_small <- lm(prof_avg ~ CS9 + PSTAT160 + PSTAT100 + PSTAT134 +
+                       PSTAT174 + CS16,
+                     data = q1_data)
 
+summary(q1_model_small)
+
+q1_coefs_small <- tidy(q1_model_small, conf.int = TRUE) %>%
+  filter(term != '(Intercept)') %>%
+  arrange(desc(estimate))
+
+q1_coefs_small
+
+# compare both models in one plot
+bind_rows(
+  q1_coefs %>% mutate(model = 'All 11 courses'),
+  q1_coefs_small %>% mutate(model = 'Larger 6 courses')
+) %>%
+  ggplot(aes(x = estimate, y = fct_reorder(term, estimate), color = model)) +
+  geom_vline(xintercept = 0, linetype = 'dashed', color = 'gray50') +
+  geom_errorbar(aes(xmin = conf.low, xmax = conf.high),
+                width = 0.2, orientation = 'y',
+                position = position_dodge(width = 0.5)) +
+  geom_point(size = 2.5, position = position_dodge(width = 0.5)) +
+  scale_color_manual(values = c('All 11 courses' = '#999999',
+                                'Larger 6 courses' = '#0072B2')) +
+  labs(x = 'Difference in average proficiency (took vs. did not take)',
+       y = NULL, color = NULL,
+       title = 'Course-taking and self-rated proficiency') +
+  theme_minimal() +
+  theme(legend.position = 'bottom')
+
+
+# not much difference in conclusion
