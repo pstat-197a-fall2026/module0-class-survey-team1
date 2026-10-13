@@ -64,7 +64,7 @@ background %>%
 # classes taken before the capstone series
 # statistics had more advance scores, this makes sense since most of the class
 # body are statistics majors
-# Programming had the most beginner responses among the lower end upper div classes taken
+# Programming had the only beginner responses among the lower end upper div classes taken
 # this makes sense as there are not many programming-centric classes in the p tat
 # department, most of R or python could have been learned throughout the major
 
@@ -141,9 +141,9 @@ background %>%
   labs(x = 'Upper-division courses taken', y = 'Number of students',
        title = 'Upper-division course counts') +
   theme_minimal()
-# more than have the student population have taken  more than 9 upperdiv coursesw
-# and almost all students have taken more than 6
-# only 2 students have taken at most 5 upperdiv courses, this may have inadverdantly 
+# more than have the student population have taken at lest 9 upperdiv courses
+# and almost all students have taken at least 6
+# only 2 students have taken at most 5 upperdiv courses, this may have inadvertently 
 # exposed juniors in the course, or anyone on their last year who is finishing up all
 # their final elective units along with the capstone series
 
@@ -177,7 +177,7 @@ course_cor %>%
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-# courses like cs16 and cs9 make sense to have a very high negative correlation as 
+# courses like cs16 and cs9 make sense to have moderate negative correlation as 
 # our major sheet allows one or the other to be taken (with cs9 preference)
 
 # classes with high or low correlations could be a tested to by the fact that
