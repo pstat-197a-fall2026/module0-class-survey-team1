@@ -190,3 +190,79 @@ course_cor %>%
 # this heat map inst an indication of propper correlation of classes taken together but 
 # may give insight on what popular classes were probably taken together by students
 # 
+
+
+# compare proficiency of each subject(Math/Stat/Programming) among respondents who took / did not take each course
+
+course_indicators <- course_long %>%
+  transmute(response_id, course = courses, taken = TRUE)
+
+course_proficiency <- background %>%
+  filter(!is.na(courses), str_trim(courses) != '') %>%
+  select(response_id, prog.prof, math.prof, stat.prof) %>%
+  crossing(course = sort(unique(course_long$courses))) %>%
+  left_join(course_indicators, by = c('response_id', 'course')) %>%
+  mutate(taken = replace_na(taken, FALSE),
+         group = if_else(taken, 'taken', 'not_taken')) %>%
+  pivot_longer(c(prog.prof, math.prof, stat.prof),
+               names_to = 'subject', values_to = 'proficiency') %>%
+  filter(!is.na(proficiency)) %>%
+  mutate(subject = recode(subject, prog.prof = 'Programming',
+                         math.prof = 'Mathematics', stat.prof = 'Statistics'),
+         subject = factor(subject,
+                          levels = c('Programming', 'Mathematics', 'Statistics')))
+
+course_proficiency_distributions <- course_proficiency %>%
+  group_by(subject, course, group) %>%
+  summarise(n = n(),
+            beginner_n = sum(proficiency == 'beg'),
+            intermediate_n = sum(proficiency == 'int'),
+            advanced_n = sum(proficiency == 'adv'),
+            mean_score = mean(as.numeric(proficiency)),
+            .groups = 'drop') %>%
+  mutate(beginner_pct = 100 * beginner_n / n,
+         intermediate_pct = 100 * intermediate_n / n,
+         advanced_pct = 100 * advanced_n / n) %>%
+  # Retain courses only when both taken / not-taken groups have at least 5.
+  group_by(subject, course) %>%
+  filter(all(n >= 5)) %>%
+  ungroup()
+
+course_proficiency_comparisons <- course_proficiency_distributions %>%
+  select(subject, course, group, n, advanced_pct, mean_score) %>%
+  pivot_wider(names_from = group,
+              values_from = c(n, advanced_pct, mean_score)) %>%
+  mutate(advanced_difference_pp = advanced_pct_taken - advanced_pct_not_taken,
+         mean_score_difference = mean_score_taken - mean_score_not_taken) %>%
+  arrange(subject, desc(abs(advanced_difference_pp)))
+
+print(course_proficiency_comparisons, n = Inf, width = Inf)
+
+# Positive differences mean advanced proficiency is more common among takers.
+course_axis <- course_proficiency_comparisons %>%
+  distinct(course, n_taken, n_not_taken) %>%
+  arrange(course) %>%
+  mutate(label = paste0(course, '  (', n_taken, '/', n_not_taken, ')'))
+
+difference_plot <- course_proficiency_comparisons %>%
+  left_join(select(course_axis, course, label), by = 'course') %>%
+  mutate(label = factor(label, levels = rev(course_axis$label))) %>%
+  ggplot(aes(x = advanced_difference_pp, y = label)) +
+  geom_vline(xintercept = 0, color = '#7A8793', linetype = 'dashed') +
+  geom_segment(aes(x = 0, xend = advanced_difference_pp, yend = label),
+               color = '#D5DEE6', linewidth = 0.7) +
+  geom_point(color = '#087E8B', shape = 16, size = 3) +
+  facet_wrap(~ subject, nrow = 1) +
+  scale_x_continuous(limits = c(-100, 100), breaks = seq(-100, 100, 50)) +
+  labs(title = 'Course-taking and self-rated proficiency',
+       x = 'Difference in percentage points', y = 'Course (taken / not taken)',) +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(),
+        plot.title = element_text(face = 'bold', size = 19),
+        strip.text = element_text(face = 'bold', size = 13))
+
+print(difference_plot)
+
+# These patterns suggest that coursework-proficiency associations exist
+# but small comparison groups and overlapping course histories might limit interpretation
