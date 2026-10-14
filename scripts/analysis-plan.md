@@ -21,4 +21,4 @@ One limitation you will need to discuss
 
 * Relationship between double majors and reported domain specialization
 
-* What factors affect the spikes in time taken to complete the survey? Feature engineering a date variable.
+* What explains spikes in when people submitted the survey? Feature engineering a date variable.
