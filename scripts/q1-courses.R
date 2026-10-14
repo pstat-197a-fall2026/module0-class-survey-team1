@@ -572,3 +572,57 @@ tidy(lm(prof_avg ~ upper_div_group, data = q1_data), conf.int = TRUE)
 # possible story: more upperdiv courses -> fewer low self ratings,
 #   rather than higher ratings overall
 # but with this sample size, the spread difference may also be due to chance
+
+
+# ============================================================================
+# 9. SUMMARY OF FINDINGS AND KEY DECISIONS ----
+# ============================================================================
+
+# KEY DECISIONS
+# - data: background-clean.csv only, all 51 consenting respondents, no missing values
+# - proficiency coded beg = 1, int = 2, adv = 3 (assumes equal spacing)
+# - outcome: prof_avg = (prog + math + stat proficiency) / 3
+#     chosen as closest to "perceived ability", comfort based and other per-skill
+#     options left for other group members
+# - courses dropped from the main model:
+#     PSTAT 120, 122, 126 -> prerequisites, nearly everyone took them
+#       (the few "non takers" had taken later courses that require them,
+#        so likely skipped checkboxes or transfer equivalents)
+#     LING 110, LING 104, GEOG 186, CS 130 -> taken by 3 or fewer students
+#   11 courses kept: PSTAT 100, 115, 127, 131, 134, 160, 174, 175, CS 5, 9, 16
+# - upperdiv course count merged into 8 or fewer vs 9+ (only 2 students in 3-5)
+#
+# FINDINGS
+# 1. main model (prof_avg ~ 11 courses):
+#    no course significant; overall model not significant (p = 0.47, adj R^2 ~ 0)
+#    PSTAT 131 largest (+0.37, p = 0.06) but only 5 non-takers -> not reliable
+# 2. robustness: 6 larger courses (p = 0.57) and all 18 courses (p = 0.55)
+#    gave the same conclusion; shared course estimates barely changed;
+#    large estimates only appeared for courses with 1-5 students in a group
+# 3. per-subject models:
+#    statistics is the only subject with a near-signal:
+#      PSTAT 115 (+0.53, p = 0.055) and PSTAT 131 (+0.44, p = 0.063)
+#      (both rest on small groups: 7 takers / 5 non-takers)
+#    programming: PSTAT 134 highest among well-sized courses (+0.30, p = 0.17)
+#    math: nothing stands out (model p = 0.72)
+# 4. difference plot:
+#    agrees with regressions in direction: PSTAT 131 largest in every subject
+#    (+23 to +50 pp), PSTAT 134 +20 pp in programming, PSTAT 115 +24 pp in stats
+
+# 5. sub-question (8 or fewer vs 9+ upper-div courses):
+#    means 2.38 vs 2.48, medians both 2.33, not significant (p = 0.40)
+#    9+ group less spread out (fewer low self ratings)
+#
+# OVERALL
+# no clear evidence that any single course, or the number of upper div courses,
+# is associated with higher self-rated proficiency in this sample;
+# the only hints are statistics specific (PSTAT 115, 131) and rest on small groups
+#
+# LIMITATIONS
+# - small sample (n = 51) and many predictors -> low power, wide intervals
+# - self-reported ratings bunched near the top -> little variation to explain
+# - check-all-that-apply course list likely missed some courses
+# - courses overlap (e.g. CS 9 / CS 16, only 5 took neither) -> some estimates
+#   rest on very small comparison groups
+# - associations only, not causal: students who choose certain electives may
+#   already differ in ability or confidence
