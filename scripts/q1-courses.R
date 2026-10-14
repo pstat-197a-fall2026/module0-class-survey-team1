@@ -370,6 +370,17 @@ glimpse(q1_data)
 # ============================================================================
 # 5. MAIN REGRESSION: prof_avg ~ 11 courses ----
 # ============================================================================
+# WHY REGRESSION
+# - each course is a taken / not-taken (0/1) indicator, so courses can be used
+#   directly as predictors of perceived ability
+# - multiple regression compares all courses at once: each coefficient is the
+#   difference in proficiency for taking that course, holding the other courses
+#   constant, which separates courses that are often taken together
+# - coefficients are on the same scale, so they can be ranked to see which
+#   course is associated with the largest difference
+# - even without statistical significance, the size and direction of the
+#   estimates give insight into which courses may relate to perceived ability,
+#   and which results rest on too few students to trust
 
 q1_model <- lm(prof_avg ~ PSTAT131 + CS9 + PSTAT160 + PSTAT100 + PSTAT134 +
                  PSTAT174 + CS16 + PSTAT115 + PSTAT127 + PSTAT175 + CS5,
