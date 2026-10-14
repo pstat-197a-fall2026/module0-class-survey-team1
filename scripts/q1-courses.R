@@ -1,6 +1,11 @@
 # Question 1: Which courses are associated with differences in perceived ability?
 # Sub-question: does the number of upper-division courses taken matter?
 
+
+# ============================================================================
+# 1. SETUP ----
+# ============================================================================
+
 library(tidyverse)
 library(broom)
 
@@ -33,8 +38,14 @@ background <- background %>%
 background %>% count(prog.prof, prog.prof.num)   # beg-1, int-2, adv-3
 background %>% count(upper_div_courses)
 
-# mini eda 
-## EDA: proficiency by number of upper-division courses
+
+# ============================================================================
+# 2. MINI EDA ----
+# ============================================================================
+
+# mini eda
+
+## EDA: proficiency by number of upper-division courses -----------------------
 background %>%
   select(upper_div_courses, prog.prof, math.prof, stat.prof) %>%
   pivot_longer(-upper_div_courses, names_to = 'skill', values_to = 'level') %>%
@@ -60,7 +71,7 @@ background %>%
   theme_minimal()
 
 # analysis:
-# there looks to be some correlation with proficiency and number of upper div 
+# there looks to be some correlation with proficiency and number of upper div
 # classes taken before the capstone series
 # statistics had more advance scores, this makes sense since most of the class
 # body are statistics majors
@@ -69,9 +80,7 @@ background %>%
 # department, most of R or python could have been learned throughout the major
 
 
-
-
-## EDA: distribution of comfort scores
+## EDA: distribution of comfort scores -----------------------------------------
 background %>%
   select(prog.comf, math.comf, stat.comf) %>%
   pivot_longer(everything(), names_to = 'skill', values_to = 'comfort') %>%
@@ -85,12 +94,13 @@ background %>%
   labs(x = 'Comfort score (1 = low, 5 = high)', y = 'Number of students',
        title = 'Distribution of self-rated comfort') +
   theme_minimal()
-# no student ever reported a score of a 1 or rarely a two, it seems that programming 
-# might be a weaker overall skill compared to math or stats, maybe students take more theoretical 
+
+# no student ever reported a score of a 1 or rarely a two, it seems that programming
+# might be a weaker overall skill compared to math or stats, maybe students take more theoretical
 # course loads that may have skewed these results
 
 
-## EDA: course data
+## EDA: course data ------------------------------------------------------------
 # one row per student-course pair
 course_long <- background %>%
   select(response_id, courses) %>%
@@ -106,7 +116,8 @@ course_counts <- course_long %>%
 
 course_counts
 
-## how many students took each course
+
+## how many students took each course ------------------------------------------
 course_counts %>%
   ggplot(aes(x = n, y = fct_reorder(courses, n))) +
   geom_col(fill = '#0072B2') +
@@ -133,7 +144,7 @@ course_counts %>%
 # could this student have chosen higher comfortability or proficiency scores?
 
 
-## upper-division course counts
+## upper-division course counts ------------------------------------------------
 background %>%
   ggplot(aes(x = upper_div_courses)) +
   geom_bar(fill = '#0072B2', width = 0.6) +
@@ -141,15 +152,15 @@ background %>%
   labs(x = 'Upper-division courses taken', y = 'Number of students',
        title = 'Upper-division course counts') +
   theme_minimal()
+
 # more than have the student population have taken at lest 9 upperdiv courses
 # and almost all students have taken at least 6
-# only 2 students have taken at most 5 upperdiv courses, this may have inadvertently 
+# only 2 students have taken at most 5 upperdiv courses, this may have inadvertently
 # exposed juniors in the course, or anyone on their last year who is finishing up all
 # their final elective units along with the capstone series
 
 
-
-## heat map of which courses are taken together
+## heat map of which courses are taken together --------------------------------
 # wide table: one row per student, one 0/1 column per course
 course_wide <- course_long %>%
   mutate(taken = 1) %>%
@@ -177,7 +188,7 @@ course_cor %>%
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-# courses like cs16 and cs9 make sense to have moderate negative correlation as 
+# courses like cs16 and cs9 make sense to have moderate negative correlation as
 # our major sheet allows one or the other to be taken (with cs9 preference)
 
 # classes with high or low correlations could be a tested to by the fact that
@@ -185,13 +196,12 @@ course_cor %>%
 # so this may mot show any indication that a student has taken this with that,
 # but rather one was available while they were interested in taking another course
 
-
-# in addition many of these classes did not have many students taking them, 
-# this heat map inst an indication of propper correlation of classes taken together but 
+# in addition many of these classes did not have many students taking them,
+# this heat map inst an indication of propper correlation of classes taken together but
 # may give insight on what popular classes were probably taken together by students
-# 
 
 
+## course vs proficiency comparisons (teammate) ----------------------------
 # compare proficiency of each subject(Math/Stat/Programming) among respondents who took / did not take each course
 
 course_indicators <- course_long %>%
@@ -208,7 +218,7 @@ course_proficiency <- background %>%
                names_to = 'subject', values_to = 'proficiency') %>%
   filter(!is.na(proficiency)) %>%
   mutate(subject = recode(subject, prog.prof = 'Programming',
-                         math.prof = 'Mathematics', stat.prof = 'Statistics'),
+                          math.prof = 'Mathematics', stat.prof = 'Statistics'),
          subject = factor(subject,
                           levels = c('Programming', 'Mathematics', 'Statistics')))
 
@@ -268,9 +278,9 @@ print(difference_plot)
 # but small comparison groups and overlapping course histories might limit interpretation
 
 
-
-
-#Building Score-------
+# ============================================================================
+# 3. BUILDING SCORE ----
+# ============================================================================
 
 # building the ability score
 ## BUILDING THE SCORES: options considered
@@ -288,7 +298,6 @@ print(difference_plot)
 # proficiency vs comfort:
 #   proficiency is closer to "perceived ability" but has little spread
 #   comfort has more spread, better suited to regression
-# 
 #
 # caveats:
 #   beg/int/adv = 1/2/3 assumes equal spacing
@@ -300,9 +309,14 @@ print(difference_plot)
 #   check -> same model on the other average, see if results agree
 #   extra -> per-skill comfort models to see which courses go with which skill
 
-## build score: overall proficiency average
+
+## build score: overall proficiency average ------------------------------------
 # prof_avg as the main outcome
 # (closest to perceived ability (comfort and per-skill options group members ? :O)
+
+# prof_avg = (programming + math + stats) / 3, with beg = 1, int = 2, adv = 3
+# example: int, int, adv -> (2 + 2 + 3) / 3 = 2.33
+# each student's proficiency answers converted to numbers: beg = 1, int = 2, adv = 3
 background <- background %>%
   mutate(prof_avg = (prog.prof.num + math.prof.num + stat.prof.num) / 3)
 
@@ -320,9 +334,9 @@ background %>%
   theme_minimal()
 
 
-# prof_avg = (programming + math + stats) / 3, with beg = 1, int = 2, adv = 3
-# example: int, int, adv -> (2 + 2 + 3) / 3 = 2.33
-# each student's proficiency answers converted to numbers: beg = 1, int = 2, adv = 3
+# ============================================================================
+# 4. BUILD COURSE VARIABLES ----
+# ============================================================================
 
 #   drop PSTAT 120, 122, 126: prerequisites, nearly everyone took them
 #   drop courses taken by 3 or fewer students (LING 110, LING 104, GEOG 186, CS 130)
@@ -352,6 +366,11 @@ q1_data <- background %>%
 nrow(q1_data)   # expect 51
 glimpse(q1_data)
 
+
+# ============================================================================
+# 5. MAIN REGRESSION: prof_avg ~ 11 courses ----
+# ============================================================================
+
 q1_model <- lm(prof_avg ~ PSTAT131 + CS9 + PSTAT160 + PSTAT100 + PSTAT134 +
                  PSTAT174 + CS16 + PSTAT115 + PSTAT127 + PSTAT175 + CS5,
                data = q1_data)
@@ -369,15 +388,14 @@ q1_coefs
 q1_coefs %>%
   ggplot(aes(x = estimate, y = fct_reorder(term, estimate))) +
   geom_vline(xintercept = 0, linetype = 'dashed', color = 'gray50') +
-  geom_errorbar(aes(xmin = conf.low, xmax = conf.high), width = 0.2, orientation = 'y') +
+  geom_errorbar(aes(xmin = conf.low, xmax = conf.high),
+                width = 0.2, orientation = 'y') +
   geom_point(size = 2.5, color = '#0072B2') +
   labs(x = 'Difference in average proficiency (took vs. did not take)',
        y = NULL,
        title = 'Course-taking and self-rated proficiency',
        subtitle = 'Points = estimates, bars = 95% confidence intervals') +
   theme_minimal()
-
-
 
 # immediate analysis
 
@@ -389,10 +407,15 @@ q1_coefs %>%
 # the overall model was not significant (p = 0.47, adjusted R^2 ~ 0)
 # two possible explanations:
 #   1. small sample (n = 51, 11 predictors) -> too little power to detect effects
-#   2. courses taken may have little connection to self-rated proficiency
+#   2. courses taken may have little connection to self rated proficiency
 # we can't tell these apart with this data; results should be read as exploratory
 
-## robustness check: refit with only the larger courses
+
+# ============================================================================
+# 6. ROBUSTNESS CHECKS ----
+# ============================================================================
+
+## robustness check: refit with only the larger courses ------------------------
 # dropped PSTAT 131 (only 5 non-takers) and PSTAT 115, 127, 175, CS 5 (5-7 takers)
 # kept courses with at least 11 students in both the taken and not-taken groups
 q1_model_small <- lm(prof_avg ~ CS9 + PSTAT160 + PSTAT100 + PSTAT134 +
@@ -426,11 +449,10 @@ bind_rows(
   theme_minimal() +
   theme(legend.position = 'bottom')
 
-
 # not much difference in conclusion
 
 
-## model with ALL courses 
+## model with ALL courses ------------------------------------------------------
 q1_data_all <- background %>%
   select(response_id, prof_avg) %>%
   left_join(course_wide_clean, by = 'response_id')
@@ -457,3 +479,96 @@ q1_coefs_all %>%
   theme_minimal()
 
 # no difference in conclusion nothing is statistically significant
+
+
+# ============================================================================
+# 7. PER-SUBJECT REGRESSIONS ----
+# ============================================================================
+
+## per-subject regressions: which courses go with each skill?
+# same 11 courses as the main model, one model per skill
+q1_data <- q1_data %>%
+  left_join(background %>%
+              select(response_id, prog.prof.num, math.prof.num, stat.prof.num),
+            by = 'response_id')
+
+course_formula <- '~ PSTAT131 + CS9 + PSTAT160 + PSTAT100 + PSTAT134 +
+                     PSTAT174 + CS16 + PSTAT115 + PSTAT127 + PSTAT175 + CS5'
+
+skill_outcomes <- c(Programming = 'prog.prof.num',
+                    Math        = 'math.prof.num',
+                    Statistics  = 'stat.prof.num')
+
+# fit one model per skill and stack the coefficients
+skill_coefs <- map_dfr(names(skill_outcomes), function(skill) {
+  model <- lm(as.formula(paste(skill_outcomes[[skill]], course_formula)),
+              data = q1_data)
+  tidy(model, conf.int = TRUE) %>%
+    filter(term != '(Intercept)') %>%
+    mutate(skill = skill)
+}) %>%
+  mutate(skill = factor(skill, levels = c('Programming', 'Math', 'Statistics')))
+
+# top 3 courses per skill
+skill_coefs %>%
+  group_by(skill) %>%
+  slice_max(estimate, n = 3) %>%
+  select(skill, term, estimate, p.value, conf.low, conf.high)
+
+# coefficient plot, one panel per skill
+skill_coefs %>%
+  ggplot(aes(x = estimate, y = fct_reorder(term, estimate))) +
+  geom_vline(xintercept = 0, linetype = 'dashed', color = 'gray50') +
+  geom_errorbar(aes(xmin = conf.low, xmax = conf.high),
+                width = 0.2, orientation = 'y') +
+  geom_point(size = 2, color = '#0072B2') +
+  facet_wrap(~ skill) +
+  labs(x = 'Difference in proficiency (took vs. did not take)', y = NULL,
+       title = 'Course-taking and self-rated proficiency by subject') +
+  theme_minimal()
+
+# per subject there seems to be more clarity, pstat 115 and 131 appear to show
+# some statistical significance
+
+
+# ============================================================================
+# 8. SUB-QUESTION: UPPER-DIVISION COURSE COUNT ----
+# ============================================================================
+
+## sub-question: does number of upper-division courses affect prof_avg?
+# merge 3-5 into 6-8 (only 2 students in 3-5)
+q1_data <- q1_data %>%
+  mutate(upper_div_group = fct_collapse(upper_div_courses,
+                                        '8 or fewer' = c('3-5', '6-8'),
+                                        '9+' = '9+'))
+
+q1_data %>% count(upper_div_group)   # expect 21 and 30
+
+# group averages
+q1_data %>%
+  group_by(upper_div_group) %>%
+  summarise(n = n(), mean = mean(prof_avg), sd = sd(prof_avg))
+
+# boxplot
+q1_data %>%
+  ggplot(aes(x = upper_div_group, y = prof_avg)) +
+  geom_boxplot(fill = '#0072B2', alpha = 0.3, width = 0.5) +
+  geom_jitter(width = 0.1, height = 0.03, alpha = 0.6) +   # show each student
+  labs(x = 'Upper-division courses taken', y = 'Average proficiency (1-3)',
+       title = 'Self-rated proficiency by number of upper-division courses') +
+  theme_minimal()
+
+# t-test (doesn't assume equal spread in both groups)
+t.test(prof_avg ~ upper_div_group, data = q1_data)
+
+# same comparison as a simple regression
+tidy(lm(prof_avg ~ upper_div_group, data = q1_data), conf.int = TRUE)
+
+
+# means (2.38 vs 2.48) and medians (both 2.33) are nearly the same
+# consistent with the t-test: difference is not significant (p = 0.40)
+# the 8 or fewer group shows more spread, with more students at 2.0;
+#   the 9+ group is more tightly clustered at 2.33 and above
+# possible story: more upperdiv courses -> fewer low self ratings,
+#   rather than higher ratings overall
+# but with this sample size, the spread difference may also be due to chance
