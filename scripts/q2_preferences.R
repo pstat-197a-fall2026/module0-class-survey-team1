@@ -59,6 +59,8 @@ ggplot(joint, aes(x = type, fill = research)) +
     fill = "Did Research?"
   )
 
+# Based on this proportion stacked bar chart, there does not seem to be
+# a signficiant difference in project preference
 ggplot(joint, aes(x = type, fill = research)) +
   geom_bar(position = "fill") +
   labs(
@@ -67,4 +69,6 @@ ggplot(joint, aes(x = type, fill = research)) +
     fill = "Did Research?"
   )
 
-
+# However, a bar chart itself is not enough to conclude significance.
+# We will use a significance test to determine if there's any tangible
+# relationship between the two variables.
