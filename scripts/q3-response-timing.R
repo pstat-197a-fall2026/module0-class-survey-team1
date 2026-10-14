@@ -102,3 +102,35 @@ p_cum <- ggplot(timing, aes(x = date, y = cum_pct)) +
   theme_minimal(base_size = 11)
 p_cum
 
+# Exploratory Poisson Model
+
+# Daily count ~ type of day, within the response window (11 days).
+# Very small sample: treat estimates as descriptive, not as tests.
+window <- window %>%
+  mutate(day_type = fct_relevel(day_type, 'No class contact'))
+
+fit <- glm(n ~ day_type, family = poisson, data = window)
+tidy(fit, exponentiate = TRUE, conf.int = TRUE)
+
+# overdispersion check: ratio well above 1 means the Poisson SEs are too small
+sum(residuals(fit, type = 'pearson')^2) / df.residual(fit)
+
+# Alternative: a separate effect for the first reminder (Tue) vs. later ones
+window <- window %>%
+  mutate(contact = case_when(
+    date == assigned_date ~ 'Assigned',
+    date == reminder_dates[1] ~ 'First reminder (Tue)',
+    date %in% reminder_dates[-1] ~ 'Later reminders (Wed/Thu)',
+    TRUE ~ 'None'
+  ) %>% fct_relevel('None'))
+
+fit2 <- glm(n ~ contact, family = poisson, data = window)
+sum(residuals(fit2, type = 'pearson')^2) / df.residual(fit2)  # still > 1
+
+# quasi-Poisson widens the intervals to account for the extra variation;
+# this is the version we report
+fit2_q <- glm(n ~ contact, family = quasipoisson, data = window)
+tidy(fit2_q, exponentiate = TRUE, conf.int = TRUE)
+
+
+
