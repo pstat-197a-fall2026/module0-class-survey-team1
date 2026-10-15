@@ -1,7 +1,7 @@
 ---
 title: "Analysis of class surveys"
 subtitle: "If you want a subtitle put it here"
-author: "List names here"
+author: "Arden Chen, Jocelyn Lee, Abigaile Co, Kevin Wu, Lucas Canez"
 date: last-modified
 published-title: "Updated"
 editor: visual
@@ -43,6 +43,14 @@ For example:
 > 3.  *Does prior research experience appear to be a substitute for coursework preparation with respect to self-assessed technical skill and comfort?*
 
 Notice that the questions are precise but not overly technical.
+
+Our goal was to observe relationships between coursework preparation and perceived ability scores. Additionally, we wanted to find out if there was a relationship between project preference and having research experience. Finally, we wanted to see if we could explain spikes in survey submissions.
+
+Our specific questions are listed below:
+
+1.  *Which course (taken/not taken) has the most difference in perceived ability scores? (multivariable linear regression)* Does total amount of upper division classes taken affect perceived ability scores?
+2.  Is there any relationship between preferring an industry project with if you’ve done research or not?
+3.  Can a date variable explain spikes in when people submitted the survey?
 
 ## Findings
 
