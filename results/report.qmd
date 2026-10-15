@@ -48,8 +48,7 @@ Notice that the questions are precise but not overly technical.
 
 Summarize your results. Don't try to explain every step you took; focus instead on providing the main data analytic outputs -- tables and figures -- and explaining clearly what they show. Clarify any important decisions you made in obtaining them. You can display codes if you like but it is not necessary.
 
-
-### Survey submission timing
+### Q3 Findings: Survey Submission Timing
 
 Background info: The survey was assigned at the first lecture (Thu Sep 24) and reminded in the next lecture, section and lecture (Tue Sep 29, Wed Sep 30, Thu Oct 1). It was due Sun Oct 4 at 11:59 PM.
 
@@ -153,6 +152,7 @@ Some of the days without class contact were weekends, which may be slow for othe
 We conclude that the survey announcement clearly drove the first wave. The first reminder probably helped, but these data can’t separate its effect from the usual weekday-to-weekend pattern. Later reminders added little.
 
 ## Finding Q2
+
 For our second question, we first performed exploratory data analysis on the two variables of interest (`research`, `type`). These two variables are categorical, hence the use of bar charts and count tables in our analysis. We found that the data set was uneven in the distribution of those who preferred industry to lab research, but balanced in whether or not the students had research experience. The counts are available in the tables below:
 
 ```{r}
@@ -234,7 +234,6 @@ The full-data fits showed several descriptive patterns. In the ridge model, unce
 ![](q2-ml-logistic.png)
 
 ![](q2-ml-tree.png)
-
 
 ## Useful tips (remove this section)
 
