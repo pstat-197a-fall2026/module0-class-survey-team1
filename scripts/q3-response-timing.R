@@ -7,14 +7,13 @@
 
 # The class calendar below is NOT in the dataset; it comes from the course
 # materials page and our own record of when announcements were made.
-# Data: data/response-timing.csv gives daily counts only (no individual
-# timestamps)
+# Data: data/response-timing.csv gives daily counts only 
 
 library(tidyverse)
 library(broom)
 
 response_date <- read_csv("data/response-timing.csv")
-View(response_date)
+#View(response_date)
 
 # add key dates
 
@@ -69,7 +68,7 @@ timing %>% filter(date == other_assignment)
 ## PLOT
 
 fill_cols <- c('Assigned in class' = '#2a78d6',
-               'Reminder in class/section' = 'gold',
+               'Reminder in class/section' = '#FFA500',
                'No class contact' = 'grey70',
                'Before first class' = 'grey85',
                'After deadline' = 'grey85')
@@ -77,8 +76,8 @@ fill_cols <- c('Assigned in class' = '#2a78d6',
 p_timing <- ggplot(timing, aes(x = date, y = n)) +
   geom_col(aes(fill = day_type), width = 0.8) +
   geom_vline(xintercept = assigned_date - 0.5, linetype = 'dashed', colour = 'grey40') + 
-  annotate('text', x = assigned_date -2.2, y=14, label = 'Assigned Date\nThur Sep 24',
-           hjust = 0, size=3.2, colour = 'grey30') + 
+  annotate('text', x = assigned_date - 0.6, y=14, label = 'Assigned Date\nThur Sep 24',
+           hjust = 1, size=3.2, colour = 'grey30') + 
   geom_vline(xintercept = deadline_date + 0.5, linetype = 'dashed', colour = 'grey40') +
   annotate('text', x = deadline_date + 0.4, y = 14, label = 'Deadline\nSun Oct 4',
            hjust = 1, size = 3.2, colour = 'grey30') +
@@ -132,5 +131,10 @@ sum(residuals(fit2, type = 'pearson')^2) / df.residual(fit2)  # still > 1
 fit2_q <- glm(n ~ contact, family = quasipoisson, data = window)
 tidy(fit2_q, exponentiate = TRUE, conf.int = TRUE)
 
+# robustness: control for weekends
+fit3_q <- glm(n ~ contact + weekend, family = quasipoisson, data = window)
+tidy(fit3_q, exponentiate = TRUE, conf.int = TRUE)
 
+# are responses evenly spread across the 11 days?
+chisq.test(window$n, simulate.p.value = TRUE, B = 10000)
 

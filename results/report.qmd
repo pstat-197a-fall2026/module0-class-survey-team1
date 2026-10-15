@@ -93,4 +93,3 @@ my_df %>%
 ### Links
 
 To include any hyperlinks, use `[display text](url)` .
-
