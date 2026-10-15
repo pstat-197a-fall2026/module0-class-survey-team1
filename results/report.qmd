@@ -19,6 +19,7 @@ Use this as a template. Keep the headers and remove all other text. Overall, you
 ```{r}
 # load any other packages and read data here
 library(tidyverse)
+library(kableExtra)
 ```
 
 ## Executive summary
@@ -46,6 +47,7 @@ Notice that the questions are precise but not overly technical.
 ## Findings
 
 Summarize your results. Don't try to explain every step you took; focus instead on providing the main data analytic outputs -- tables and figures -- and explaining clearly what they show. Clarify any important decisions you made in obtaining them. You can display codes if you like but it is not necessary.
+
 
 ### Survey submission timing
 
@@ -149,6 +151,90 @@ The class contact column identifies an "ordinary day" as a weekday or weekend wi
 Some of the days without class contact were weekends, which may be slow for other reasons. Hence, we re-fit the model with a weekend indicator. The assignment day held up (\~3.2 times an ordinary weekday) however, the first reminder diminished to x2.1 times, and the conf interval now includes 1.
 
 We conclude that the survey announcement clearly drove the first wave. The first reminder probably helped, but these data can’t separate its effect from the usual weekday-to-weekend pattern. Later reminders added little.
+
+## Finding Q2
+For our second question, we first performed exploratory data analysis on the two variables of interest (`research`, `type`). These two variables are categorical, hence the use of bar charts and count tables in our analysis. We found that the data set was uneven in the distribution of those who preferred industry to lab research, but balanced in whether or not the students had research experience. The counts are available in the tables below:
+
+```{r}
+background <- read_csv('../data/background-clean.csv', show_col_types = FALSE)
+interest <- read_csv('../data/interest-clean.csv', show_col_types = FALSE)
+
+joint <- background |> 
+  inner_join(interest, by = 'response_id')
+
+joint |> group_by(type) |> 
+  count() |> 
+  kable()
+
+joint |> group_by(research) |> 
+  count() |> 
+  kable()
+```
+
+Additionally, here are the bar graphs of their distributions:
+
+```{r}
+ggplot(joint, aes(x = type)) +
+  geom_bar(fill = "steelblue")
+
+ggplot(joint, aes(x = research)) +
+  geom_bar(fill = "coral")
+```
+
+For our bivariate analysis we made a contingency table and stacked bar chart to see if there was any noticeable change in likelihood for being interested in research. The figures are shown below:
+
+```{r}
+# Contingency table of the two variables
+table(joint$research, joint$type) |> 
+  kable()
+
+ggplot(joint, aes(x = type, fill = research)) +
+  geom_bar() +
+  labs(
+    x = "Preferred Project",
+    y = "COunt",
+    fill = "Did Research?"
+  )
+```
+
+It's hard to see if there's a difference in proportion so we also made a proportion bar chart:
+
+```{r}
+ggplot(joint, aes(x = type, fill = research)) +
+  geom_bar(position = "fill") +
+  labs(
+    x = "Preferred Project",
+    y = "Frequency",
+    fill = "Did Research?"
+  )
+```
+
+Based on this bar chart, doing research does not seem to significantly affect project preference. Something worth pointing out is that the proportion is very similar for those who did research across all project preference groups. However, for those who preferred industry, there was a lower proportion of people who definitively did research that is made up for by those who were unsure of if they did research or not.
+
+Next, we did hypothesis testing to see if there was any evidence to support a correlation between the two variables. Our null hypothesis is H0: project preference and research experience are independent. Our alternative hypothesis is HA: project preference and research experience are associated. Initially, we used Pearson's Chi-squared test. However, since only 6 observations recorded that they preferred research, there was not enough observations per unique value for it to be a reliable test. Therefore, we went with Fisher's Exact Test.
+
+```{r}
+fisher.test(joint$research, joint$type)
+```
+
+We obtained a p-value of 0.8424 \> 0.05. Since the p-value is higher than our rejection threshold, we fail to reject H0. There is not enough evidence to suggest that project preference is influenced by whether or not the person did research.
+
+Expanding on the second question,we next examined whether research experience combined with other background variables could predict an explicit preference for industry projects. To do this, we fit ridge logistic regression and a shallow classification tree. Among the 49 respondents, 32 preferred industry, while 17 preferred lab projects or reported no preference. Both models used the same predictors, balanced class weights, and a 0.5 classification threshold. Predictive performance was evaluated using five-fold cross-validation repeated ten times.
+
+| Model                     | Accuracy | Balanced accuracy |   AUC |
+|---------------------------|---------:|------------------:|------:|
+| Always predict Industry   |    65.3% |             50.0% | 0.500 |
+| Ridge logistic regression |    36.3% |             33.9% | 0.335 |
+| Shallow decision tree     |    42.2% |             41.3% | 0.358 |
+
+The decision tree performed better than logistic regression across all three metrics, but neither model outperformed the majority-class baseline. Balanced accuracy remained below 50%, and AUC values below 0.5 indicated poor discrimination between the two preference groups. To evaluate model significance, we conducted 499 label permutations, refitting both models through the same validation procedure. The one-sided tests provided no evidence of above-null balanced accuracy ($p = 0.972$ for logistic regression; $p = 0.872$ for the tree). Both Benjamini–Hochberg-adjusted p-values were 0.972.
+
+The full-data fits showed several descriptive patterns. In the ridge model, uncertainty about prior research experience was associated with higher predicted industry preference relative to reporting no research experience, holding other predictors constant. Statistics proficiency had a negative coefficient. The tree first separated advanced statistics proficiency ($n = 33$) from beginner or intermediate proficiency ($n = 16$), then split on research experience and domain specialization. These fitted relationships did not translate into effective out-of-sample prediction. Other parameter settings were also explored without a consistent improvement over the baseline.
+
+![](q2-ml-logistic.png)
+
+![](q2-ml-tree.png)
+
 
 ## Useful tips (remove this section)
 
