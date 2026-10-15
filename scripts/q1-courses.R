@@ -10,7 +10,7 @@ library(tidyverse)
 library(broom)
 
 # 51 students who consented
-background <- read_csv('data/background-clean.csv', show_col_types = FALSE)
+background <- read_csv("../data/background-clean.csv", show_col_types = FALSE)
 
 nrow(background)              # expect 51
 glimpse(background)
