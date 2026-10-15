@@ -19,24 +19,7 @@ Use this as a template. Keep the headers and remove all other text. Overall, you
 ```{r}
 # load any other packages and read data here
 library(tidyverse)
-<<<<<<< HEAD
-library(broom)
-# loading data and converting profiency metrics to integers
-background <- read_csv("../data/background-clean.csv", show_col_types = FALSE) %>%
-  mutate(across(ends_with('.prof'),
-                ~ match(.x, c('beg', 'int', 'adv')),
-                .names = '{.col}.num'),
-         prof_avg = (prog.prof.num + math.prof.num + stat.prof.num) / 3)
-# One row per student-course pair, trimming spaces from course names
-course_long <- background %>%
-  select(response_id, courses) %>%
-  separate_rows(courses, sep = ',\\s*') %>%
-  mutate(courses = str_remove_all(str_trim(courses), ' ')) %>%
-  filter(courses != '') %>%
-  distinct(response_id, courses)
-=======
 library(kableExtra)
->>>>>>> 94b1ac5de30b5ccf7bb6852efb1ae8c95d91dba0
 ```
 
 ## Executive summary
@@ -53,9 +36,11 @@ Write a brief description of the dataset. Your description should cover how data
 #| warning: false
 #| echo: false
 
+library(tidyverse)
+library(kableExtra)
 
-background <- read_csv('/Users/jocelynlee/Downloads/module0-class-survey-team1/data/background-clean.csv', show_col_types = FALSE)
-interest   <- read_csv('/Users/jocelynlee/Downloads/module0-class-survey-team1/data/interest-clean.csv', show_col_types = FALSE)
+background <- read_csv('../data/background-clean.csv', show_col_types = FALSE)
+interest   <- read_csv('../data/interest-clean.csv', show_col_types = FALSE)
 ```
 
 ### How the data were obtained
@@ -166,7 +151,6 @@ For example:
 >
 > 1.  *How should the coursework histories of students in the class be ordered from less preparation to extensive preparation?*
 > 2.  *Is coursework preparation associated with increased self-assessed technical skill and comfort within the sample?*
-> 3.  *Does prior research experience appear to be a substitute for coursework preparation with respect to self-assessed technical skill and comfort?*
 > 3.  What can explain the spikes in when people submitted the survey?
 
 Notice that the questions are precise but not overly technical.
@@ -175,136 +159,7 @@ Notice that the questions are precise but not overly technical.
 
 Summarize your results. Don't try to explain every step you took; focus instead on providing the main data analytic outputs -- tables and figures -- and explaining clearly what they show. Clarify any important decisions you made in obtaining them. You can display codes if you like but it is not necessary.
 
-<<<<<<< HEAD
-Question 1:
-
-Question 1: Which courses are associated with differences in perceived ability?
-
-Sub-question: does the number of upper-division courses taken matter?
-
-As an exploratory analysis we first mapped the number of upper-division courses to self-rated profiency.
-
-```{r}
-# set low -> high
-proficiency_levels <- c('beg', 'int', 'adv')
-
-# make proficiency ordered factors (beg < int < adv)
-background <- background %>%
-  mutate(across(ends_with('.prof'),
-                ~ factor(.x, levels = proficiency_levels, ordered = TRUE)))
-
-# numeric = 1, int = 2, adv = 3
-background <- background %>%
-  mutate(across(ends_with('.prof'), as.numeric, .names = '{.col}.num'))
-
-# set up category ranges (3-5 < 6-8 < 9+)
-background <- background %>%
-  mutate(upper_div_courses = factor(upper_div_courses,
-                                    levels = c('3-5', '6-8', '9+'),
-                                    ordered = TRUE))
-## EDA: proficiency by number of upper-division courses -----------------------
-background %>%
-  select(upper_div_courses, prog.prof, math.prof, stat.prof) %>%
-  pivot_longer(-upper_div_courses, names_to = 'skill', values_to = 'level') %>%
-  mutate(skill = recode(skill, prog.prof = 'Programming',
-                        math.prof = 'Math', stat.prof = 'Statistics'),
-         skill = factor(skill, levels = c('Programming', 'Math', 'Statistics'))) %>%
-  ggplot(aes(x = upper_div_courses, fill = level)) +
-  geom_bar(position = position_fill(reverse = TRUE)) +   # beg at bottom
-  facet_wrap(~ skill) +
-  scale_x_discrete(labels = c('3-5' = '3-5\n(n=2)',       # show group sizes
-                              '6-8' = '6-8\n(n=19)',
-                              '9+'  = '9+\n(n=30)')) +
-  scale_y_continuous(labels = scales::percent) +
-  scale_fill_manual(values = c(beg = '#E69F00',
-                               int = '#999999',
-                               adv = '#0072B2'),
-                    labels = c(beg = 'Beginner',
-                               int = 'Intermediate',
-                               adv = 'Advanced')) +
-  labs(x = 'Upper-division courses taken', y = 'Proportion of students',
-       fill = 'Proficiency',
-       title = 'Self-rated proficiency by number of upper-division courses') +
-  theme_minimal()
-```
-
-There looks to be some correlation with proficiency and number of upper div classes taken before the capstone series statistics had more advance scores, this makes sense since most of the class body are statistics majors. Programming had the only beginner responses among the lower end upper div classes taken this makes sense as there are not many programming-centric classes in the PSTAT department, most of R or python could have been learned throughout the major rather than in specific classes.
-
-For the main analysis of analyzing what courses correlate to difference in perceived ability, we first looked at the course list. We dropped PSTAT 120, 122, and 126 as nearly all student took them, and so the , we also dropped courses taken by 3 or fewer students(LING 110, LING 104, GEOG 186, CS 130), as that many students wouldn't be a large enough sample size to produce some inference.
-
-```{r}
-course_wide <- course_long %>%
-  mutate(taken = 1) %>%
-  pivot_wider(names_from = courses, values_from = taken, values_fill = 0)
-
-q1_data <- background %>%
-  select(response_id, prof_avg, ends_with('.prof.num')) %>%
-  left_join(select(course_wide, response_id, all_of(keep_courses)),
-            by = 'response_id')
-```
-
-We decided to use regression as each course can become a binary explanatory variable; taken/not taken can become 0 and 1 respecively, so courses can be used directly as predictors of perceived ability. Additionally, multiple regression compares all courses at once: each coefficient is the difference in proficiency for taking that course, holding the other courses constant, which separates courses that are often taken together coefficients are on the same scale, so they can be ranked to see which course is associated with the largest difference even without statistical significance, the size and direction of the estimates give insight into which courses may relate to perceived ability, and which results rest on too few students to trust.
-
-```{r}
-course_wide <- course_long %>%
-  mutate(taken = 1) %>%
-  pivot_wider(names_from = courses, values_from = taken, values_fill = 0)
-
-q1_data <- background %>%
-  select(response_id, ends_with('.prof.num')) %>%
-  left_join(select(course_wide, response_id, all_of(keep_courses)),
-            by = 'response_id')
-```
-
-```{r}
-# fitting overall and individual skills into one outcome variable
-outcomes <- c(Overall     = 'prof_avg',
-              Programming = 'prog.prof.num',
-              Math        = 'math.prof.num',
-              Statistics  = 'stat.prof.num')
-
-models <- map(outcomes,
-              ~ lm(reformulate(keep_courses, response = .x), data = q1_data))
-
-summary(models$Overall)   # main model: overall p-value, adjusted R^2
-```
-
-At first, we decided to use the proficiency average, so then we could just use one model to see if any courses made a statistically significant difference in all perceived proficiencies.
-
-From the model, no course showed a statistically significant difference in prof_avg (all p \> 0.05) PSTAT 131 had the largest difference (+0.37, p = 0.06), but only 5 of 51 students had not taken it, so the estimate compares 46 students to 5 and is not reliable the overall model was not significant (p = 0.47, adjusted R\^2 \~ 0).  There are two possible explanations:
-
-   1. small sample (n = 51, 11 predictors) -\> too little power to detect effects
-
-   2. courses taken may have little connection to self rated proficiency
-
-Since there was no course that showed a statistically significant difference in the proficiency, we then thought there could be a difference in the individual perceived proficiences.
-
-```{}
-```
-
-```{r}
-coefs %>%
-  filter(model != 'Overall') %>%
-  ggplot(aes(x = estimate, y = fct_reorder(term, estimate))) +
-  geom_vline(xintercept = 0, linetype = 'dashed', color = 'gray50') +
-  geom_errorbar(aes(xmin = conf.low, xmax = conf.high),
-                width = 0.2, orientation = 'y') +
-  geom_point(size = 2, color = '#0072D3') +
-  facet_wrap(~ model) +
-  labs(x = 'Difference in proficiency (took vs. did not take)', y = NULL,
-       title = 'Course-taking and self-rated proficiency by subject') +
-  theme_minimal()
-```
-
-Looking at the graph, we can see 3 categories for each prof. metric as well as a list of all relevant courses, and for each course there is a 95% percent confidence interval for their coefficients. Looking at significance, Statistics is the only panel with a hint of signal: PSTAT 115 (+0.53, p = 0.055) and PSTAT 131 (+0.44, p = 0.063). Both are above the 0.05 cutoff, and both rest on small comparison groups (7 takers for 115, 5 non-takers for 131), thus their intervals are wide. Programming: PSTAT 134 is highest among the well-sized courses (+0.30, p = 0.17). It's plausible that PSTAT134 has an effect, since it is one of the more applied courses, but the interval still does includes zero.
-
-Overall, there is no clear evidence that any single course, or the number of upper div courses,is associated with higher self-rated proficiency in this sample; the only hints are statistics specific (PSTAT 115, 131) and rest on small groups.
-=======
-
-### Q3 Findings: Survey Submission Timing
-
 ### Survey submission timing
-
 
 Background info: The survey was assigned at the first lecture (Thu Sep 24) and reminded in the next lecture, section and lecture (Tue Sep 29, Wed Sep 30, Thu Oct 1). It was due Sun Oct 4 at 11:59 PM.
 
@@ -490,7 +345,6 @@ The full-data fits showed several descriptive patterns. In the ridge model, unce
 ![](q2-ml-logistic.png)
 
 ![](q2-ml-tree.png)
->>>>>>> 94b1ac5de30b5ccf7bb6852efb1ae8c95d91dba0
 
 ## Useful tips (remove this section)
 
