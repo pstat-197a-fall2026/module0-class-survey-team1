@@ -39,13 +39,116 @@ For example:
 >
 > 1.  *How should the coursework histories of students in the class be ordered from less preparation to extensive preparation?*
 > 2.  *Is coursework preparation associated with increased self-assessed technical skill and comfort within the sample?*
-> 3.  *Does prior research experience appear to be a substitute for coursework preparation with respect to self-assessed technical skill and comfort?*
+> 3.  What can explain the spikes in when people submitted the survey?
 
 Notice that the questions are precise but not overly technical.
 
 ## Findings
 
 Summarize your results. Don't try to explain every step you took; focus instead on providing the main data analytic outputs -- tables and figures -- and explaining clearly what they show. Clarify any important decisions you made in obtaining them. You can display codes if you like but it is not necessary.
+
+### Survey submission timing
+
+Background info: The survey was assigned at the first lecture (Thu Sep 24) and reminded in the next lecture, section and lecture (Tue Sep 29, Wed Sep 30, Thu Oct 1). It was due Sun Oct 4 at 11:59 PM.
+
+```{r echo=FALSE label=timing-setup}
+library(broom)
+
+timing <- read_csv('../data/response-timing.csv', show_col_types = FALSE)
+
+# class calendar from the course website (not part of the survey data)
+assigned_date  <- as.Date('2026-09-24')
+reminder_dates <- as.Date(c('2026-09-29', '2026-09-30', '2026-10-01'))
+deadline_date  <- as.Date('2026-10-04')
+
+timing <- timing %>%
+  mutate(weekday = wday(date, label = TRUE),
+         weekend = weekday %in% c('Sat', 'Sun'),
+         day_type = case_when(
+           date <  assigned_date ~ 'Before first class',
+           date == assigned_date ~ 'Assigned in class',
+           date %in% reminder_dates ~ 'Reminder in class/section',
+           date >  deadline_date ~ 'After deadline',
+           TRUE ~ 'No class contact'))
+
+# response window: assignment day through deadline (11 days, 53 responses)
+window <- timing %>%
+  filter(date >= assigned_date, date <= deadline_date) %>%
+  mutate(contact = case_when(
+    date == assigned_date ~ 'Assigned (Thu Sep 24)',
+    date == reminder_dates[1] ~ 'First reminder (Tue Sep 29)',
+    date %in% reminder_dates[-1] ~ 'Later reminders (Wed Sep 30, Thu Oct 1)',
+    TRUE ~ 'None') %>% fct_relevel('None'))
+```
+
+```{r}
+#| label: fig-timing
+#| fig-cap: "Daily survey submissions. The class calendar comes from the course website, not the survey data."
+#| fig-width: 8
+#| fig-height: 4.5
+fill_cols <- c('Assigned in class' = '#2a78d6',
+               'Reminder in class/section' = '#FFA500',
+               'No class contact' = 'grey70',
+               'Before first class' = 'grey85',
+               'After deadline' = 'grey85')
+
+ggplot(timing, aes(x = date, y = n)) +
+  geom_col(aes(fill = day_type), width = 0.8) +
+  geom_vline(xintercept = assigned_date - 0.5, linetype = 'dashed', colour = 'grey40') + 
+  annotate('text', x = assigned_date - 0.6, y=14, label = 'Assigned Date\nThur Sep 24',
+           hjust = 1, size=3.2, colour = 'grey30') + 
+  geom_vline(xintercept = deadline_date + 0.5, linetype = 'dashed', colour = 'grey40') +
+  annotate('text', x = deadline_date + 0.4, y = 14, label = 'Deadline\nSun Oct 4',
+           hjust = 1, size = 3.2, colour = 'grey30') +
+  geom_text(aes(label = n), vjust = -0.4, size = 3.2, colour = 'grey20') +
+  scale_fill_manual(values = fill_cols, breaks = names(fill_cols)[1:3], name = NULL) +
+  scale_x_date(date_breaks = '1 day', date_labels = '%a\n%b %d', expand = expansion(add = 0.6)) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.08))) +
+  labs(x = NULL, y = 'Survey responses submitted',
+       title = 'Responses spiked on the days the survey was announced in class') +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = 'top', panel.grid.major.x = element_blank(),
+        panel.grid.minor = element_blank())
+```
+
+Responses came in arguably two to three waves. Two of them happening on a day the survey was mentioned in class. The first class, Thursday, Sep. 24, brought in 15 responses (close to 30% of the class). The following day, Friday Sep. 25, brought on a new wave of responses, summoning 8 more responses. Hence, in roughly 24 hours since the assignment was announced, roughly 44% of the class had completed the survey. The next in-class session/reminder was on Tuesday, Sep. 29, accumulating 10 more responses. This turned the total cumulative percentage of students who completed the survey to 78%. Students did not procrastinate and only 3 responses came in on the deadline (Sunday Oct 4), and one late response (Monday Oct 5). Both are left out of the analysis.
+
+```{r}
+#| label: timing-chisq
+set.seed(197)
+gof <- chisq.test(window$n, simulate.p.value = TRUE, B = 10000)
+```
+
+To check whether responses could have been spread evenly across the window, we compared the daily counts with an even split of about 4.8 per day. We used a simulated p-value because the expected daily counts are too small for the standard chi-squared approximation.
+
+```{r}
+#| label: tbl-timing-model
+#| tbl-cap: "Quasi-Poisson models of daily submissions, Sep 24 to Oct 4 (11 days). Estimates are rate ratios relative to days with no class contact; the intercept is responses per day on such a day. 95% intervals in parentheses."
+fit_main    <- glm(n ~ contact,           family = quasipoisson, data = window)
+fit_weekend <- glm(n ~ contact + weekend, family = quasipoisson, data = window)
+
+fmt <- function(fit) {
+  tidy(fit, exponentiate = TRUE, conf.int = TRUE) %>%
+    mutate(value = sprintf('%.2f (%.2f, %.2f)', estimate, conf.low, conf.high)) %>%
+    select(term, value)
+}
+
+full_join(fmt(fit_main), fmt(fit_weekend), by = 'term') %>%
+  mutate(term = term %>%
+           str_remove('^contact') %>%
+           str_replace('\\(Intercept\\)', 'Baseline: responses per day') %>%
+           str_replace('weekendTRUE', 'Weekend day'),
+         across(everything(), ~ replace_na(.x, '-'))) %>%
+  knitr::kable(col.names = c('', 'Class contact only', 'Adding weekend'))
+```
+
+Used two quasi-poisson models.The "class contact" column predicts daily responses from the type of day: day assigned, first reminder, later reminders, or no class contact. The second column "Adding weekend" is the same model plus a yes/no weekend term. Note, every other row besides "baseline" is a multiplier on that baseline.
+
+The class contact column identifies an "ordinary day" as a weekday or weekend with no class contact. A baseline tells us there is about \~3.3 responses on an ordinary day (no class contact). The Assigned row tells us there were times 4.6 more responses on the Assigned day. The conf interval being well above 1 means the spike is clear (if it includes 1, the data can't rule out as "no effect"). The first reminder had 3.3 times more than an ordinary day. The later responses were no different from an ordinary day.
+
+Some of the days without class contact were weekends, which may be slow for other reasons. Hence, we re-fit the model with a weekend indicator. The assignment day held up (\~3.2 times an ordinary weekday) however, the first reminder diminished to x2.1 times, and the conf interval now includes 1.
+
+We conclude that the survey announcement clearly drove the first wave. The first reminder probably helped, but these data can’t separate its effect from the usual weekday-to-weekend pattern. Later reminders added little.
 
 ## Useful tips (remove this section)
 
