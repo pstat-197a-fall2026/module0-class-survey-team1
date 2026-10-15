@@ -30,6 +30,117 @@ Write a one-paragraph abstract summarizing what you did and your findings. It ne
 
 Write a brief description of the dataset. Your description should cover how data were obtained, sample characteristics, and measurements taken. It does not need to be exhaustive, but sufficiently detailed to convey a clear high-level understanding of the dataset. You can utilize bullet points or tables if you feel it would help improve clarity.
 
+```{r}
+#| label: setup-data-description
+#| message: false
+#| warning: false
+#| echo: false
+
+library(tidyverse)
+library(kableExtra)
+
+background <- read_csv('/Users/jocelynlee/Downloads/module0-class-survey-team1/data/background-clean.csv', show_col_types = FALSE)
+interest   <- read_csv('/Users/jocelynlee/Downloads/module0-class-survey-team1/data/interest-clean.csv', show_col_types = FALSE)
+```
+
+### How the data were obtained
+
+The data come from an intake survey given through Google Forms to students enrolled in PSTAT 197A, the UCSB data science capstone class for Fall Quarter 2026. The survey asked about students' academic backgrounds and their interests related to future capstone projects. It was used to assign students to temporary project teams and to provide the dataset for this analysis.
+
+Every enrolled student was expected to complete the survey as coursework. It was due Sunday, October 4, 2026 at 11:59 p.m. Pacific time.
+
+The course instructor cleaned and de-identified the responses before sharing them. That process included:
+
+- replacing names with artificial respondent IDs to anonymize participants
+- removing free-text answers and individual timestamps
+- combining the two research-experience questions into one variable
+- standardizing spelling variants of major-specific names
+- reporting demographics only as class-level counts (i.e. gender and major aren't tied to individual answers)
+
+Other collection details:
+
+- **Collection window:** Responses were submitted between September 23 and October 5, 2026. Almost half (23 of 55) arrived on September 24–25, and the rest were spread across the following week and a half. 54 responses were on time and 1 was submitted after the deadline.
+- **Consent:** Students were asked separately whether their responses could be used for the background section and for the project-interest section. Of the 55 respondents, 49 consented to both, 2 consented only to the background section, and 4 consented to neither.
+- **De-identification:** Each response's `response_id` doesn't encode identity or submission order. Demographic information can't be linked to individual responses.
+
+### Data files
+
+The two respondent-level files join on `response_id`, which gives 49 students who answered both sections.
+
+| File | Unit | Rows | Contents |
+|------------------|------------------|------------------|------------------|
+| `background-clean.csv` | Respondent | 51 | Self-rated skills, coursework, domain specialization, research experience |
+| `interest-clean.csv` | Respondent | 49 | Project type, programming language, domain and methods interests |
+| `class-summary.csv` | Category | — | Aggregate demographics for all 55 respondents (standing, gender, race, majors, consent) |
+| `response-timing.csv` | Date | 13 | Number of submissions per day |
+| `survey-metadata.csv` | Variable | — | Data dictionary with question wording and coding notes |
+
+### Sample characteristics
+
+The 55 respondents were mostly seniors majoring in Statistics and Data Science.
+
+- **Class standing:** 89.1% seniors, 9.1% juniors, and 1 junior with senior-level credits.
+- **Major:** 94.5% Statistics and Data Science. One-third (18 students) reported a second major.
+- **Gender:** 54.5% male, 41.8% female, 1 another self-description, 1 preferred not to say.
+- **Race/ethnicity:** 67.3% Asian, 14.5% Caucasian, 10.9% multiracial, 1.8% American Indian or Alaska Native, 5.5% preferred not to say.
+
+### Measurements
+
+**Background section (n = 51)**
+
+| Variable | Type | Summary |
+|------------------------|------------------------|------------------------|
+| Programming, math, and statistics proficiency | Ordinal: beginner / intermediate / advanced, relative to a typical UCSB undergraduate | Statistics was rated highest (65% advanced). Programming was mostly intermediate (63%), and only 3 students rated themselves beginners in anything. |
+| Programming, math, and statistics comfort | Ordinal, 1 (least comfortable) to 5 (most comfortable). No student chose 1. | Mean comfort was 3.71 for programming, 3.94 for math, and 4.14 for statistics. |
+| Upper-division courses taken | Ordinal: 3–5 / 6–8 / 9+ | 59% reported 9+, 37% reported 6–8, and 4% reported 3–5. |
+| Completed courses | Multiple selection from a list | Median of 7 courses selected. The most common were PSTAT 126 (50), PSTAT 120 (49), PSTAT 131 (46), PSTAT 122 (43), and CS 9 (40). |
+| Domain specialization | Yes / No / Unsure | 18 Yes, 25 No, 8 Unsure |
+| Supervised research experience | Yes / No / Unsure, derived from two questions (data science and non-data-science research, excluding class and personal projects) | 23 Yes, 24 No, 4 Unsure |
+
+**Project-interest section (n = 49)**
+
+| Variable | Type | Summary |
+|------------------------|------------------------|------------------------|
+| Preferred project type | Categorical: industry / research lab / no preference | 32 industry, 6 research lab, 11 no preference |
+| Preferred programming language | Categorical: Python / R / no preference | 22 Python, 11 R, 16 no preference |
+| Domains of interest | Multiple selection (e.g., technology, biology, public health), with optional write-ins | — |
+| Data science areas of interest | Multiple selection (e.g., predictive modeling, deep learning, NLP) | — |
+
+```{r}
+#| label: check-summary-numbers
+#| include: false
+
+# Code that produces the numbers in the summary tables above.
+# include: false runs it without showing it in the rendered report.
+
+# Joined sample size (49)
+background |> inner_join(interest, by = 'response_id') |> nrow()
+
+# Proficiency counts by subject
+background |>
+  select(prog.prof, math.prof, stat.prof) |>
+  pivot_longer(everything(), names_to = "subject", values_to = "level") |>
+  count(subject, level)
+
+# Mean comfort by subject
+background |>
+  summarize(across(c(prog.comf, math.comf, stat.comf), \(x) round(mean(x), 2)))
+
+# Upper-division courses
+background |> count(upper_div_courses) |> mutate(percent = round(100 * n / sum(n)))
+
+# Completed courses: median per student and the most common
+courses_long <- background |> separate_longer_delim(courses, delim = ", ")
+courses_long |> count(response_id) |> summarize(median_courses = median(n))
+courses_long |> count(courses, sort = TRUE) |> head(5)
+
+# Domain specialization, research, project type, language
+background |> count(domain_specialization)
+background |> count(research)
+interest |> count(type)
+interest |> count(language)
+```
+
 ## Questions of interest
 
 Indicate the questions your analysis addresses. These should map one-to-one to your findings. Don't include questions you didn't answer or questions you started with and refined later. If you would rather frame them as goals or tasks rather than questions that is okay; just modify the header appropriately. However you frame what you've done, you may only have two or three items; that is fine. Provide an itemized or numbered list so that the reader can easily identify your objectives.
@@ -47,7 +158,6 @@ Notice that the questions are precise but not overly technical.
 ## Findings
 
 Summarize your results. Don't try to explain every step you took; focus instead on providing the main data analytic outputs -- tables and figures -- and explaining clearly what they show. Clarify any important decisions you made in obtaining them. You can display codes if you like but it is not necessary.
-
 
 ### Survey submission timing
 
@@ -153,6 +263,7 @@ Some of the days without class contact were weekends, which may be slow for othe
 We conclude that the survey announcement clearly drove the first wave. The first reminder probably helped, but these data can’t separate its effect from the usual weekday-to-weekend pattern. Later reminders added little.
 
 ## Finding Q2
+
 For our second question, we first performed exploratory data analysis on the two variables of interest (`research`, `type`). These two variables are categorical, hence the use of bar charts and count tables in our analysis. We found that the data set was uneven in the distribution of those who preferred industry to lab research, but balanced in whether or not the students had research experience. The counts are available in the tables below:
 
 ```{r}
@@ -234,7 +345,6 @@ The full-data fits showed several descriptive patterns. In the ridge model, unce
 ![](q2-ml-logistic.png)
 
 ![](q2-ml-tree.png)
-
 
 ## Useful tips (remove this section)
 
