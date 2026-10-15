@@ -114,6 +114,22 @@ fisher.test(joint$research, joint$type)
 
 We obtained a p-value of 0.8424 \> 0.05. Since the p-value is higher than our rejection threshold, we fail to reject H0. There is not enough evidence to suggest that project preference is influenced by whether or not the person did research.
 
+Expanding on the second question,we next examined whether research experience combined with other background variables could predict an explicit preference for industry projects. To do this, we fit ridge logistic regression and a shallow classification tree. Among the 49 respondents, 32 preferred industry, while 17 preferred lab projects or reported no preference. Both models used the same predictors, balanced class weights, and a 0.5 classification threshold. Predictive performance was evaluated using five-fold cross-validation repeated ten times.
+
+| Model                     | Accuracy | Balanced accuracy |   AUC |
+|---------------------------|---------:|------------------:|------:|
+| Always predict Industry   |    65.3% |             50.0% | 0.500 |
+| Ridge logistic regression |    36.3% |             33.9% | 0.335 |
+| Shallow decision tree     |    42.2% |             41.3% | 0.358 |
+
+The decision tree performed better than logistic regression across all three metrics, but neither model outperformed the majority-class baseline. Balanced accuracy remained below 50%, and AUC values below 0.5 indicated poor discrimination between the two preference groups. To evaluate model significance, we conducted 499 label permutations, refitting both models through the same validation procedure. The one-sided tests provided no evidence of above-null balanced accuracy ($p = 0.972$ for logistic regression; $p = 0.872$ for the tree). Both Benjamini–Hochberg-adjusted p-values were 0.972.
+
+The full-data fits showed several descriptive patterns. In the ridge model, uncertainty about prior research experience was associated with higher predicted industry preference relative to reporting no research experience, holding other predictors constant. Statistics proficiency had a negative coefficient. The tree first separated advanced statistics proficiency ($n = 33$) from beginner or intermediate proficiency ($n = 16$), then split on research experience and domain specialization. These fitted relationships did not translate into effective out-of-sample prediction. Other parameter settings were also explored without a consistent improvement over the baseline.
+
+![](q2-ml-logistic.png)
+
+![](q2-ml-tree.png)
+
 ## Useful tips (remove this section)
 
 Due to the visual editor, most common needs for authoring can be met using menu items in the RStudio IDE. For a comprehensive guide to Quarto, see the [documentation](https://quarto.org/docs/guide/); consult the documentation for anything you can't sort out in the IDE.
