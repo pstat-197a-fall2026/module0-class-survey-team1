@@ -72,3 +72,22 @@ ggplot(joint, aes(x = type, fill = research)) +
 # However, a bar chart itself is not enough to conclude significance.
 # We will use a significance test to determine if there's any tangible
 # relationship between the two variables.
+
+# SIGNIFICANCE TEST
+
+# H0: Project preference and research experience are independent
+# HA: Project preference and research experience are associated
+
+# Chi-square test of independence
+chisq.test(joint$research, joint$type)
+
+# Check the expected counts - the chi-square test assumes each is at least 5
+chisq.test(joint$research, joint$type)$expected
+
+# Because few people preferred research projects, some expected counts are
+# below 5, so the chi-square approximation may not be reliable.
+# Fisher's exact test doesn't rely on that assumption:
+fisher.test(joint$research, joint$type)
+
+# Using alpha = 0.05: if p > 0.05 we fail to reject H0, meaning we don't have
+# evidence of a relationship between doing research and project preference.
