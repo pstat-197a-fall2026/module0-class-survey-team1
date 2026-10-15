@@ -19,6 +19,7 @@ Use this as a template. Keep the headers and remove all other text. Overall, you
 ```{r}
 # load any other packages and read data here
 library(tidyverse)
+<<<<<<< HEAD
 library(broom)
 # loading data and converting profiency metrics to integers
 background <- read_csv("../data/background-clean.csv", show_col_types = FALSE) %>%
@@ -33,6 +34,9 @@ course_long <- background %>%
   mutate(courses = str_remove_all(str_trim(courses), ' ')) %>%
   filter(courses != '') %>%
   distinct(response_id, courses)
+=======
+library(kableExtra)
+>>>>>>> 94b1ac5de30b5ccf7bb6852efb1ae8c95d91dba0
 ```
 
 ## Executive summary
@@ -42,6 +46,115 @@ Write a one-paragraph abstract summarizing what you did and your findings. It ne
 ## Data description
 
 Write a brief description of the dataset. Your description should cover how data were obtained, sample characteristics, and measurements taken. It does not need to be exhaustive, but sufficiently detailed to convey a clear high-level understanding of the dataset. You can utilize bullet points or tables if you feel it would help improve clarity.
+
+```{r}
+#| label: setup-data-description
+#| message: false
+#| warning: false
+#| echo: false
+
+
+background <- read_csv('/Users/jocelynlee/Downloads/module0-class-survey-team1/data/background-clean.csv', show_col_types = FALSE)
+interest   <- read_csv('/Users/jocelynlee/Downloads/module0-class-survey-team1/data/interest-clean.csv', show_col_types = FALSE)
+```
+
+### How the data were obtained
+
+The data come from an intake survey given through Google Forms to students enrolled in PSTAT 197A, the UCSB data science capstone class for Fall Quarter 2026. The survey asked about students' academic backgrounds and their interests related to future capstone projects. It was used to assign students to temporary project teams and to provide the dataset for this analysis.
+
+Every enrolled student was expected to complete the survey as coursework. It was due Sunday, October 4, 2026 at 11:59 p.m. Pacific time.
+
+The course instructor cleaned and de-identified the responses before sharing them. That process included:
+
+- replacing names with artificial respondent IDs to anonymize participants
+- removing free-text answers and individual timestamps
+- combining the two research-experience questions into one variable
+- standardizing spelling variants of major-specific names
+- reporting demographics only as class-level counts (i.e. gender and major aren't tied to individual answers)
+
+Other collection details:
+
+- **Collection window:** Responses were submitted between September 23 and October 5, 2026. Almost half (23 of 55) arrived on September 24–25, and the rest were spread across the following week and a half. 54 responses were on time and 1 was submitted after the deadline.
+- **Consent:** Students were asked separately whether their responses could be used for the background section and for the project-interest section. Of the 55 respondents, 49 consented to both, 2 consented only to the background section, and 4 consented to neither.
+- **De-identification:** Each response's `response_id` doesn't encode identity or submission order. Demographic information can't be linked to individual responses.
+
+### Data files
+
+The two respondent-level files join on `response_id`, which gives 49 students who answered both sections.
+
+| File | Unit | Rows | Contents |
+|------------------|------------------|------------------|------------------|
+| `background-clean.csv` | Respondent | 51 | Self-rated skills, coursework, domain specialization, research experience |
+| `interest-clean.csv` | Respondent | 49 | Project type, programming language, domain and methods interests |
+| `class-summary.csv` | Category | — | Aggregate demographics for all 55 respondents (standing, gender, race, majors, consent) |
+| `response-timing.csv` | Date | 13 | Number of submissions per day |
+| `survey-metadata.csv` | Variable | — | Data dictionary with question wording and coding notes |
+
+### Sample characteristics
+
+The 55 respondents were mostly seniors majoring in Statistics and Data Science.
+
+- **Class standing:** 89.1% seniors, 9.1% juniors, and 1 junior with senior-level credits.
+- **Major:** 94.5% Statistics and Data Science. One-third (18 students) reported a second major.
+- **Gender:** 54.5% male, 41.8% female, 1 another self-description, 1 preferred not to say.
+- **Race/ethnicity:** 67.3% Asian, 14.5% Caucasian, 10.9% multiracial, 1.8% American Indian or Alaska Native, 5.5% preferred not to say.
+
+### Measurements
+
+**Background section (n = 51)**
+
+| Variable | Type | Summary |
+|------------------------|------------------------|------------------------|
+| Programming, math, and statistics proficiency | Ordinal: beginner / intermediate / advanced, relative to a typical UCSB undergraduate | Statistics was rated highest (65% advanced). Programming was mostly intermediate (63%), and only 3 students rated themselves beginners in anything. |
+| Programming, math, and statistics comfort | Ordinal, 1 (least comfortable) to 5 (most comfortable). No student chose 1. | Mean comfort was 3.71 for programming, 3.94 for math, and 4.14 for statistics. |
+| Upper-division courses taken | Ordinal: 3–5 / 6–8 / 9+ | 59% reported 9+, 37% reported 6–8, and 4% reported 3–5. |
+| Completed courses | Multiple selection from a list | Median of 7 courses selected. The most common were PSTAT 126 (50), PSTAT 120 (49), PSTAT 131 (46), PSTAT 122 (43), and CS 9 (40). |
+| Domain specialization | Yes / No / Unsure | 18 Yes, 25 No, 8 Unsure |
+| Supervised research experience | Yes / No / Unsure, derived from two questions (data science and non-data-science research, excluding class and personal projects) | 23 Yes, 24 No, 4 Unsure |
+
+**Project-interest section (n = 49)**
+
+| Variable | Type | Summary |
+|------------------------|------------------------|------------------------|
+| Preferred project type | Categorical: industry / research lab / no preference | 32 industry, 6 research lab, 11 no preference |
+| Preferred programming language | Categorical: Python / R / no preference | 22 Python, 11 R, 16 no preference |
+| Domains of interest | Multiple selection (e.g., technology, biology, public health), with optional write-ins | — |
+| Data science areas of interest | Multiple selection (e.g., predictive modeling, deep learning, NLP) | — |
+
+```{r}
+#| label: check-summary-numbers
+#| include: false
+
+# Code that produces the numbers in the summary tables above.
+# include: false runs it without showing it in the rendered report.
+
+# Joined sample size (49)
+background |> inner_join(interest, by = 'response_id') |> nrow()
+
+# Proficiency counts by subject
+background |>
+  select(prog.prof, math.prof, stat.prof) |>
+  pivot_longer(everything(), names_to = "subject", values_to = "level") |>
+  count(subject, level)
+
+# Mean comfort by subject
+background |>
+  summarize(across(c(prog.comf, math.comf, stat.comf), \(x) round(mean(x), 2)))
+
+# Upper-division courses
+background |> count(upper_div_courses) |> mutate(percent = round(100 * n / sum(n)))
+
+# Completed courses: median per student and the most common
+courses_long <- background |> separate_longer_delim(courses, delim = ", ")
+courses_long |> count(response_id) |> summarize(median_courses = median(n))
+courses_long |> count(courses, sort = TRUE) |> head(5)
+
+# Domain specialization, research, project type, language
+background |> count(domain_specialization)
+background |> count(research)
+interest |> count(type)
+interest |> count(language)
+```
 
 ## Questions of interest
 
@@ -54,6 +167,7 @@ For example:
 > 1.  *How should the coursework histories of students in the class be ordered from less preparation to extensive preparation?*
 > 2.  *Is coursework preparation associated with increased self-assessed technical skill and comfort within the sample?*
 > 3.  *Does prior research experience appear to be a substitute for coursework preparation with respect to self-assessed technical skill and comfort?*
+> 3.  What can explain the spikes in when people submitted the survey?
 
 Notice that the questions are precise but not overly technical.
 
@@ -61,6 +175,7 @@ Notice that the questions are precise but not overly technical.
 
 Summarize your results. Don't try to explain every step you took; focus instead on providing the main data analytic outputs -- tables and figures -- and explaining clearly what they show. Clarify any important decisions you made in obtaining them. You can display codes if you like but it is not necessary.
 
+<<<<<<< HEAD
 Question 1:
 
 Question 1: Which courses are associated with differences in perceived ability?
@@ -184,6 +299,198 @@ coefs %>%
 Looking at the graph, we can see 3 categories for each prof. metric as well as a list of all relevant courses, and for each course there is a 95% percent confidence interval for their coefficients. Looking at significance, Statistics is the only panel with a hint of signal: PSTAT 115 (+0.53, p = 0.055) and PSTAT 131 (+0.44, p = 0.063). Both are above the 0.05 cutoff, and both rest on small comparison groups (7 takers for 115, 5 non-takers for 131), thus their intervals are wide. Programming: PSTAT 134 is highest among the well-sized courses (+0.30, p = 0.17). It's plausible that PSTAT134 has an effect, since it is one of the more applied courses, but the interval still does includes zero.
 
 Overall, there is no clear evidence that any single course, or the number of upper div courses,is associated with higher self-rated proficiency in this sample; the only hints are statistics specific (PSTAT 115, 131) and rest on small groups.
+=======
+
+### Q3 Findings: Survey Submission Timing
+
+### Survey submission timing
+
+
+Background info: The survey was assigned at the first lecture (Thu Sep 24) and reminded in the next lecture, section and lecture (Tue Sep 29, Wed Sep 30, Thu Oct 1). It was due Sun Oct 4 at 11:59 PM.
+
+```{r echo=FALSE label=timing-setup}
+library(broom)
+
+timing <- read_csv('../data/response-timing.csv', show_col_types = FALSE)
+
+# class calendar from the course website (not part of the survey data)
+assigned_date  <- as.Date('2026-09-24')
+reminder_dates <- as.Date(c('2026-09-29', '2026-09-30', '2026-10-01'))
+deadline_date  <- as.Date('2026-10-04')
+
+timing <- timing %>%
+  mutate(weekday = wday(date, label = TRUE),
+         weekend = weekday %in% c('Sat', 'Sun'),
+         day_type = case_when(
+           date <  assigned_date ~ 'Before first class',
+           date == assigned_date ~ 'Assigned in class',
+           date %in% reminder_dates ~ 'Reminder in class/section',
+           date >  deadline_date ~ 'After deadline',
+           TRUE ~ 'No class contact'))
+
+# response window: assignment day through deadline (11 days, 53 responses)
+window <- timing %>%
+  filter(date >= assigned_date, date <= deadline_date) %>%
+  mutate(contact = case_when(
+    date == assigned_date ~ 'Assigned (Thu Sep 24)',
+    date == reminder_dates[1] ~ 'First reminder (Tue Sep 29)',
+    date %in% reminder_dates[-1] ~ 'Later reminders (Wed Sep 30, Thu Oct 1)',
+    TRUE ~ 'None') %>% fct_relevel('None'))
+```
+
+```{r}
+#| label: fig-timing
+#| fig-cap: "Daily survey submissions. The class calendar comes from the course website, not the survey data."
+#| fig-width: 8
+#| fig-height: 4.5
+fill_cols <- c('Assigned in class' = '#2a78d6',
+               'Reminder in class/section' = '#FFA500',
+               'No class contact' = 'grey70',
+               'Before first class' = 'grey85',
+               'After deadline' = 'grey85')
+
+ggplot(timing, aes(x = date, y = n)) +
+  geom_col(aes(fill = day_type), width = 0.8) +
+  geom_vline(xintercept = assigned_date - 0.5, linetype = 'dashed', colour = 'grey40') + 
+  annotate('text', x = assigned_date - 0.6, y=14, label = 'Assigned Date\nThur Sep 24',
+           hjust = 1, size=3.2, colour = 'grey30') + 
+  geom_vline(xintercept = deadline_date + 0.5, linetype = 'dashed', colour = 'grey40') +
+  annotate('text', x = deadline_date + 0.4, y = 14, label = 'Deadline\nSun Oct 4',
+           hjust = 1, size = 3.2, colour = 'grey30') +
+  geom_text(aes(label = n), vjust = -0.4, size = 3.2, colour = 'grey20') +
+  scale_fill_manual(values = fill_cols, breaks = names(fill_cols)[1:3], name = NULL) +
+  scale_x_date(date_breaks = '1 day', date_labels = '%a\n%b %d', expand = expansion(add = 0.6)) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.08))) +
+  labs(x = NULL, y = 'Survey responses submitted',
+       title = 'Responses spiked on the days the survey was announced in class') +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = 'top', panel.grid.major.x = element_blank(),
+        panel.grid.minor = element_blank())
+```
+
+Responses came in arguably two to three waves. Two of them happening on a day the survey was mentioned in class. The first class, Thursday, Sep. 24, brought in 15 responses (close to 30% of the class). The following day, Friday Sep. 25, brought on a new wave of responses, summoning 8 more responses. Hence, in roughly 24 hours since the assignment was announced, roughly 44% of the class had completed the survey. The next in-class session/reminder was on Tuesday, Sep. 29, accumulating 10 more responses. This turned the total cumulative percentage of students who completed the survey to 78%. Students did not procrastinate and only 3 responses came in on the deadline (Sunday Oct 4), and one late response (Monday Oct 5). Both are left out of the analysis.
+
+```{r}
+#| label: timing-chisq
+set.seed(197)
+gof <- chisq.test(window$n, simulate.p.value = TRUE, B = 10000)
+```
+
+To check whether responses could have been spread evenly across the window, we compared the daily counts with an even split of about 4.8 per day. We used a simulated p-value because the expected daily counts are too small for the standard chi-squared approximation.
+
+```{r}
+#| label: tbl-timing-model
+#| tbl-cap: "Quasi-Poisson models of daily submissions, Sep 24 to Oct 4 (11 days). Estimates are rate ratios relative to days with no class contact; the intercept is responses per day on such a day. 95% intervals in parentheses."
+fit_main    <- glm(n ~ contact,           family = quasipoisson, data = window)
+fit_weekend <- glm(n ~ contact + weekend, family = quasipoisson, data = window)
+
+fmt <- function(fit) {
+  tidy(fit, exponentiate = TRUE, conf.int = TRUE) %>%
+    mutate(value = sprintf('%.2f (%.2f, %.2f)', estimate, conf.low, conf.high)) %>%
+    select(term, value)
+}
+
+full_join(fmt(fit_main), fmt(fit_weekend), by = 'term') %>%
+  mutate(term = term %>%
+           str_remove('^contact') %>%
+           str_replace('\\(Intercept\\)', 'Baseline: responses per day') %>%
+           str_replace('weekendTRUE', 'Weekend day'),
+         across(everything(), ~ replace_na(.x, '-'))) %>%
+  knitr::kable(col.names = c('', 'Class contact only', 'Adding weekend'))
+```
+
+Used two quasi-poisson models.The "class contact" column predicts daily responses from the type of day: day assigned, first reminder, later reminders, or no class contact. The second column "Adding weekend" is the same model plus a yes/no weekend term. Note, every other row besides "baseline" is a multiplier on that baseline.
+
+The class contact column identifies an "ordinary day" as a weekday or weekend with no class contact. A baseline tells us there is about \~3.3 responses on an ordinary day (no class contact). The Assigned row tells us there were times 4.6 more responses on the Assigned day. The conf interval being well above 1 means the spike is clear (if it includes 1, the data can't rule out as "no effect"). The first reminder had 3.3 times more than an ordinary day. The later responses were no different from an ordinary day.
+
+Some of the days without class contact were weekends, which may be slow for other reasons. Hence, we re-fit the model with a weekend indicator. The assignment day held up (\~3.2 times an ordinary weekday) however, the first reminder diminished to x2.1 times, and the conf interval now includes 1.
+
+We conclude that the survey announcement clearly drove the first wave. The first reminder probably helped, but these data can’t separate its effect from the usual weekday-to-weekend pattern. Later reminders added little.
+
+## Finding Q2
+
+For our second question, we first performed exploratory data analysis on the two variables of interest (`research`, `type`). These two variables are categorical, hence the use of bar charts and count tables in our analysis. We found that the data set was uneven in the distribution of those who preferred industry to lab research, but balanced in whether or not the students had research experience. The counts are available in the tables below:
+
+```{r}
+background <- read_csv('../data/background-clean.csv', show_col_types = FALSE)
+interest <- read_csv('../data/interest-clean.csv', show_col_types = FALSE)
+
+joint <- background |> 
+  inner_join(interest, by = 'response_id')
+
+joint |> group_by(type) |> 
+  count() |> 
+  kable()
+
+joint |> group_by(research) |> 
+  count() |> 
+  kable()
+```
+
+Additionally, here are the bar graphs of their distributions:
+
+```{r}
+ggplot(joint, aes(x = type)) +
+  geom_bar(fill = "steelblue")
+
+ggplot(joint, aes(x = research)) +
+  geom_bar(fill = "coral")
+```
+
+For our bivariate analysis we made a contingency table and stacked bar chart to see if there was any noticeable change in likelihood for being interested in research. The figures are shown below:
+
+```{r}
+# Contingency table of the two variables
+table(joint$research, joint$type) |> 
+  kable()
+
+ggplot(joint, aes(x = type, fill = research)) +
+  geom_bar() +
+  labs(
+    x = "Preferred Project",
+    y = "COunt",
+    fill = "Did Research?"
+  )
+```
+
+It's hard to see if there's a difference in proportion so we also made a proportion bar chart:
+
+```{r}
+ggplot(joint, aes(x = type, fill = research)) +
+  geom_bar(position = "fill") +
+  labs(
+    x = "Preferred Project",
+    y = "Frequency",
+    fill = "Did Research?"
+  )
+```
+
+Based on this bar chart, doing research does not seem to significantly affect project preference. Something worth pointing out is that the proportion is very similar for those who did research across all project preference groups. However, for those who preferred industry, there was a lower proportion of people who definitively did research that is made up for by those who were unsure of if they did research or not.
+
+Next, we did hypothesis testing to see if there was any evidence to support a correlation between the two variables. Our null hypothesis is H0: project preference and research experience are independent. Our alternative hypothesis is HA: project preference and research experience are associated. Initially, we used Pearson's Chi-squared test. However, since only 6 observations recorded that they preferred research, there was not enough observations per unique value for it to be a reliable test. Therefore, we went with Fisher's Exact Test.
+
+```{r}
+fisher.test(joint$research, joint$type)
+```
+
+We obtained a p-value of 0.8424 \> 0.05. Since the p-value is higher than our rejection threshold, we fail to reject H0. There is not enough evidence to suggest that project preference is influenced by whether or not the person did research.
+
+Expanding on the second question,we next examined whether research experience combined with other background variables could predict an explicit preference for industry projects. To do this, we fit ridge logistic regression and a shallow classification tree. Among the 49 respondents, 32 preferred industry, while 17 preferred lab projects or reported no preference. Both models used the same predictors, balanced class weights, and a 0.5 classification threshold. Predictive performance was evaluated using five-fold cross-validation repeated ten times.
+
+| Model                     | Accuracy | Balanced accuracy |   AUC |
+|---------------------------|---------:|------------------:|------:|
+| Always predict Industry   |    65.3% |             50.0% | 0.500 |
+| Ridge logistic regression |    36.3% |             33.9% | 0.335 |
+| Shallow decision tree     |    42.2% |             41.3% | 0.358 |
+
+The decision tree performed better than logistic regression across all three metrics, but neither model outperformed the majority-class baseline. Balanced accuracy remained below 50%, and AUC values below 0.5 indicated poor discrimination between the two preference groups. To evaluate model significance, we conducted 499 label permutations, refitting both models through the same validation procedure. The one-sided tests provided no evidence of above-null balanced accuracy ($p = 0.972$ for logistic regression; $p = 0.872$ for the tree). Both Benjamini–Hochberg-adjusted p-values were 0.972.
+
+The full-data fits showed several descriptive patterns. In the ridge model, uncertainty about prior research experience was associated with higher predicted industry preference relative to reporting no research experience, holding other predictors constant. Statistics proficiency had a negative coefficient. The tree first separated advanced statistics proficiency ($n = 33$) from beginner or intermediate proficiency ($n = 16$), then split on research experience and domain specialization. These fitted relationships did not translate into effective out-of-sample prediction. Other parameter settings were also explored without a consistent improvement over the baseline.
+
+![](q2-ml-logistic.png)
+
+![](q2-ml-tree.png)
+>>>>>>> 94b1ac5de30b5ccf7bb6852efb1ae8c95d91dba0
 
 ## Useful tips (remove this section)
 
