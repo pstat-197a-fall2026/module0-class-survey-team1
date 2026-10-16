@@ -39,8 +39,8 @@ Write a brief description of the dataset. Your description should cover how data
 library(tidyverse)
 library(kableExtra)
 
-background <- read_csv('/Users/jocelynlee/Downloads/module0-class-survey-team1/data/background-clean.csv', show_col_types = FALSE)
-interest   <- read_csv('/Users/jocelynlee/Downloads/module0-class-survey-team1/data/interest-clean.csv', show_col_types = FALSE)
+background <- read_csv('../data/background-clean.csv', show_col_types = FALSE)
+interest   <- read_csv('../data/interest-clean.csv', show_col_types = FALSE)
 ```
 
 ### How the data were obtained
