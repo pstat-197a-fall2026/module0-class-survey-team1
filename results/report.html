@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,10 +11,16 @@
 
 <title>Analysis of class surveys</title>
 <style>
-code{white-space: pre-wrap;}
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -28,18 +34,17 @@ ul.task-list li input[type="checkbox"] {
 <script src="report_files/libs/clipboard/clipboard.min.js"></script>
 <script src="report_files/libs/quarto-html/quarto.js" type="module"></script>
 <script src="report_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="report_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="report_files/libs/quarto-html/popper.min.js"></script>
 <script src="report_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="report_files/libs/quarto-html/anchor.min.js"></script>
 <link href="report_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="report_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="report_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="report_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="report_files/libs/bootstrap/bootstrap-1fbf936f5d115924c956bdfb76a204f2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="report_files/libs/bootstrap/bootstrap-e491f8ff3e9ef7ba1930cda3f1cae37e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -321,7 +326,7 @@ Table&nbsp;1: Quasi-Poisson models of daily submissions, Sep 24 to Oct 4 (11 day
 </figcaption>
 <div aria-describedby="tbl-timing-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<table class="cell caption-top table table-sm table-striped small">
 <colgroup>
 <col style="width: 51%">
 <col style="width: 24%">
@@ -542,6 +547,69 @@ alternative hypothesis: two.sided</code></pre>
 <p>The full-data fits showed several descriptive patterns. In the ridge model, uncertainty about prior research experience was associated with higher predicted industry preference relative to reporting no research experience, holding other predictors constant. Statistics proficiency had a negative coefficient. The tree first separated advanced statistics proficiency (<span class="math inline">\(n = 33\)</span>) from beginner or intermediate proficiency (<span class="math inline">\(n = 16\)</span>), then split on research experience and domain specialization. These fitted relationships did not translate into effective out-of-sample prediction. Other parameter settings were also explored without a consistent improvement over the baseline.</p>
 <p><img src="q2-ml-logistic.png" class="img-fluid"></p>
 <p><img src="q2-ml-tree.png" class="img-fluid"></p>
+</section>
+<section id="course-correlation-with-perceived-ability-scores" class="level3">
+<h3 class="anchored" data-anchor-id="course-correlation-with-perceived-ability-scores">Course Correlation with Perceived ability scores</h3>
+<p>As an exploratory analysis we first mapped the number of upper-division courses to self-rated proficiency.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="report_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>There looks to be some correlation with proficiency and number of upper div classes taken before the capstone series statistics had more advance scores, this makes sense since most of the class body are statistics majors. Programming had the only beginner responses among the lower end upper div classes taken this makes sense as there are not many programming-centric classes in the PSTAT department, most of R or python could have been learned throughout the major rather than in specific classes.</p>
+<p>For the main analysis of analyzing what courses correlate to difference in perceived ability, we first looked at the course list. We dropped PSTAT 120, 122, and 126 as nearly all student took them, and so the , we also dropped courses taken by 3 or fewer students(LING 110, LING 104, GEOG 186, CS 130), as that many students wouldn’t be a large enough sample size to produce some inference.</p>
+<p>We decided to use regression as each course can become a binary explanatory variable; taken/not taken can become 0 and 1 respecively, so courses can be used directly as predictors of perceived ability. Additionally, multiple regression compares all courses at once: each coefficient is the difference in proficiency for taking that course, holding the other courses constant, which separates courses that are often taken together coefficients are on the same scale, so they can be ranked to see which course is associated with the largest difference even without statistical significance, the size and direction of the estimates give insight into which courses may relate to perceived ability, and which results rest on too few students to trust.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = reformulate(keep_courses, response = .x), data = q1_data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.64916 -0.27912  0.02027  0.25396  0.65278 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  2.406689   0.266093   9.045 4.06e-11 ***
+CS16        -0.158979   0.159072  -0.999   0.3238    
+CS5         -0.040510   0.216805  -0.187   0.8527    
+CS9         -0.166853   0.160740  -1.038   0.3056    
+PSTAT100     0.002420   0.118503   0.020   0.9838    
+PSTAT115     0.244731   0.224718   1.089   0.2828    
+PSTAT127    -0.153571   0.212831  -0.722   0.4749    
+PSTAT131     0.374019   0.195195   1.916   0.0627 .  
+PSTAT134    -0.007645   0.145734  -0.052   0.9584    
+PSTAT160    -0.149686   0.144419  -1.036   0.3064    
+PSTAT174    -0.148344   0.143134  -1.036   0.3064    
+PSTAT175    -0.120713   0.200074  -0.603   0.5498    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.3859 on 39 degrees of freedom
+Multiple R-squared:  0.2198,    Adjusted R-squared:  -0.0002611 
+F-statistic: 0.9988 on 11 and 39 DF,  p-value: 0.4648</code></pre>
+</div>
+</div>
+<p>At first, we decided to use the proficiency average, so then we could just use one model to see if any courses made a statistically significant difference in all perceived proficiencies.</p>
+<p>From the model, no course showed a statistically significant difference in prof_avg (all p &gt; 0.05) PSTAT 131 had the largest difference (+0.37, p = 0.06), but only 5 of 51 students had not taken it, so the estimate compares 46 students to 5 and is not reliable the overall model was not significant (p = 0.47, adjusted R^2 ~ 0).&nbsp; There are two possible explanations:</p>
+<p>&nbsp;&nbsp;&nbsp;1. small sample (n = 51, 11 predictors) -&gt; too little power to detect effects</p>
+<p>&nbsp;&nbsp;&nbsp;2. courses taken may have little connection to self rated proficiency ``` Since there was no course that showed a statistically significant difference in the proficiency, we then thought there could be a difference in the individual perceived proficiences.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="report_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Looking at the graph, we can see 3 categories for each prof. metric as well as a list of all relevant courses, and for each course there is a 95% percent confidence interval for their coefficients. Looking at significance, Statistics is the only panel with a hint of signal: PSTAT 115 (+0.53, p = 0.055) and PSTAT 131 (+0.44, p = 0.063). Both are above the 0.05 cutoff, and both rest on small comparison groups (7 takers for 115, 5 non-takers for 131), thus their intervals are wide. Programming: PSTAT 134 is highest among the well-sized courses (+0.30, p = 0.17). It’s plausible that PSTAT134 has an effect, since it is one of the more applied courses, but the interval still does includes zero.</p>
+<p>Overall, there is no clear evidence that any single course, or the number of upper div courses,is associated with higher self-rated proficiency in this sample; the only hints are statistics specific (PSTAT 115, 131) and rest on small groups.</p>
 </section>
 </section>
 
