@@ -14,8 +14,6 @@ execute:
   cache: true
 ---
 
-Use this as a template. Keep the headers and remove all other text. Overall, your report may be quite short. When it is complete, render and then push changes to your team repository.
-
 ```{r}
 # load any other packages and read data here
 library(tidyverse)
@@ -24,11 +22,9 @@ library(kableExtra)
 
 ## Executive summary
 
-Write a one-paragraph abstract summarizing what you did and your findings. It need not be comprehensive; try to highlight the most important or interesting outcomes.
+We analyzed responses to the PSTAT 197A intake survey, completed by 55 students in Fall 2026, of whom 51 consented to share their background responses and 49 consented to both sections. We examined three questions: whether course history is associated with students’ self rated ability in programming, math, and stats; whether research experience or other background characteristics relate to a preference for industry over research projects; and what explains the timing of survey submissions. First, no course was significantly associated with overall self rated proficiency in a multiple regression model, a result that held across several model versions. The closest signals appeared in statistics, where students who had taken PSTAT 115 or PSTAT 131 more often rated themselves as advanced (p ≈ 0.06), though both estimates rested on small comparison groups. Second, students strongly preferred industry projects (32 of 49), but this preference was unrelated to research experience (Fisher’s exact test, p = 0.84), and predictive models using all background variables performed no better than chance. This suggests a class-wide interest in industry experience, possibly reflecting current job market pressures, rather than one tied to backgrounds. Third, submissions clustered around class announcements: the assignment day alone drew 15 responses, and about 78% of students had responded by the first reminder. Taken together, students’ self-reported backgrounds explained little about their perceived skills or preferences, while their behavior responded clearly to direct prompts. These conclusions are limited by the small sample, the self reported nature of all measures, and the similar course histories of most students, which left few meaningful comparison groups; our findings are therefore best viewed as exploratory.
 
 ## Data description
-
-Write a brief description of the dataset. Your description should cover how data were obtained, sample characteristics, and measurements taken. It does not need to be exhaustive, but sufficiently detailed to convey a clear high-level understanding of the dataset. You can utilize bullet points or tables if you feel it would help improve clarity.
 
 ```{r}
 #| label: setup-data-description
@@ -143,18 +139,6 @@ interest |> count(language)
 
 ## Questions of interest
 
-Indicate the questions your analysis addresses. These should map one-to-one to your findings. Don't include questions you didn't answer or questions you started with and refined later. If you would rather frame them as goals or tasks rather than questions that is okay; just modify the header appropriately. However you frame what you've done, you may only have two or three items; that is fine. Provide an itemized or numbered list so that the reader can easily identify your objectives.
-
-For example:
-
-> *We sought to understand the relationship between coursework preparation, self-assessed technical abilities, and comfort level with technical skills. We also sought to understand whether the relationships differed depending on having had prior research experience. Our analysis addressed three questions:*
->
-> 1.  *How should the coursework histories of students in the class be ordered from less preparation to extensive preparation?*
-> 2.  *Is coursework preparation associated with increased self-assessed technical skill and comfort within the sample?*
-> 3.  What can explain the spikes in when people submitted the survey?
-
-Notice that the questions are precise but not overly technical.
-
 Our goal was to observe relationships between coursework preparation and perceived ability scores. Additionally, we wanted to find out if there was a relationship between project preference and having research experience. Finally, we wanted to see if we could explain spikes in survey submissions.
 
 Our specific questions are listed below:
@@ -164,8 +148,6 @@ Our specific questions are listed below:
 3.  Can a date variable explain spikes in when people submitted the survey?
 
 ## Findings
-
-Summarize your results. Don't try to explain every step you took; focus instead on providing the main data analytic outputs -- tables and figures -- and explaining clearly what they show. Clarify any important decisions you made in obtaining them. You can display codes if you like but it is not necessary.
 
 ### Survey submission timing
 
@@ -270,9 +252,9 @@ Some of the days without class contact were weekends, which may be slow for othe
 
 We conclude that the survey announcement clearly drove the first wave. The first reminder probably helped, but these data can’t separate its effect from the usual weekday-to-weekend pattern. Later reminders added little.
 
-## Finding Q2
+## Project Preference
 
-For our second question, we first performed exploratory data analysis on the two variables of interest (`research`, `type`). These two variables are categorical, hence the use of bar charts and count tables in our analysis. We found that the data set was uneven in the distribution of those who preferred industry to lab research, but balanced in whether or not the students had research experience. The counts are available in the tables below:
+For our second question, we first performed exploratory data analysis on two variables of interest (`research`, `type`). These two variables are categorical, hence the use of bar charts and count tables in our analysis. We found that the data set was uneven in the distribution of those who preferred industry to lab research, but balanced in whether or not the students had research experience. The counts are available in the tables below:
 
 ```{r}
 background <- read_csv('../data/background-clean.csv', show_col_types = FALSE)
@@ -353,50 +335,3 @@ The full-data fits showed several descriptive patterns. In the ridge model, unce
 ![](q2-ml-logistic.png)
 
 ![](q2-ml-tree.png)
-
-## Useful tips (remove this section)
-
-Due to the visual editor, most common needs for authoring can be met using menu items in the RStudio IDE. For a comprehensive guide to Quarto, see the [documentation](https://quarto.org/docs/guide/); consult the documentation for anything you can't sort out in the IDE.
-
-### Code chunks
-
-Insert code chunks using the *Insert* drop-down menu or `ctrl + alt + I` . By default in this document, codes will not be shown but results will. If you want to change this behavior, add the chunk option `echo: true` as below.
-
-```{r}
-#| echo: true
-my_df <- tibble(animal = c('snake', 'gecko'),
-                threatening = c(TRUE, FALSE))
-
-my_df
-```
-
-Code chunks will be executed in order when the document is rendered, so packages should be loaded at the very beginning of the document
-
-### Rendering tables in markdown
-
-Several functions exist for converting dataframes to markdown tables for nice display. A simple one from the `knitr` package is `knitr::kable()` .
-
-```{r}
-my_df %>% knitr::kable()
-```
-
-### Figures
-
-To include any figures not generated by code chunks, use *Insert \> Figure / Image* or `![CAPTION](path/file.ext)` .
-
-Most of the time code chunks producing plots will render fine. However, to adjust sizing or alignment, use the chunk options `fig-width` and `fig-height` . Captions can be added with `fig-cap` .
-
-```{r}
-#| fig-width: 4
-#| fig-height: 3
-#| fig-align: left
-#| fig-cap: A terrible plot.
-
-my_df %>% 
-  ggplot(aes(x = animal, y = threatening)) + 
-  geom_col()
-```
-
-### Links
-
-To include any hyperlinks, use `[display text](url)` .
