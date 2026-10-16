@@ -1,6 +1,6 @@
 ---
 title: "Analysis of class surveys"
-subtitle: "If you want a subtitle put it here"
+subtitle: ""
 author: "Arden Chen, Jocelyn Lee, Abigaile Co, Kevin Wu, Lucas Canez"
 date: last-modified
 published-title: "Updated"
@@ -143,9 +143,9 @@ Our goal was to observe relationships between coursework preparation and perceiv
 
 Our specific questions are listed below:
 
-1.  *Which course (taken/not taken) has the most difference in perceived ability scores? (multivariable linear regression)* Does total amount of upper division classes taken affect perceived ability scores?
+1.  Can a date variable explain spikes in when people submitted the survey?
 2.  Is there any relationship between preferring an industry project with if you’ve done research or not?
-3.  Can a date variable explain spikes in when people submitted the survey?
+3.  *Which course (taken/not taken) has the most difference in perceived ability scores? (multivariable linear regression)* Does total amount of upper division classes taken affect perceived ability scores?
 
 ## Findings
 
@@ -153,7 +153,7 @@ Our specific questions are listed below:
 
 Background info: The survey was assigned at the first lecture (Thu Sep 24) and reminded in the next lecture, section and lecture (Tue Sep 29, Wed Sep 30, Thu Oct 1). It was due Sun Oct 4 at 11:59 PM.
 
-```{r echo=FALSE label=timing-setup}
+```{r echo=FALSE, label=timing-setup}
 library(broom)
 
 timing <- read_csv('../data/response-timing.csv', show_col_types = FALSE)
@@ -252,7 +252,7 @@ Some of the days without class contact were weekends, which may be slow for othe
 
 We conclude that the survey announcement clearly drove the first wave. The first reminder probably helped, but these data can’t separate its effect from the usual weekday-to-weekend pattern. Later reminders added little.
 
-## Project Preference
+### Project Preference
 
 For our second question, we first performed exploratory data analysis on two variables of interest (`research`, `type`). These two variables are categorical, hence the use of bar charts and count tables in our analysis. We found that the data set was uneven in the distribution of those who preferred industry to lab research, but balanced in whether or not the students had research experience. The counts are available in the tables below:
 

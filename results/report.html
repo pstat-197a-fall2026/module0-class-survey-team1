@@ -2,102 +2,75 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.38">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="List names here">
-<meta name="dcterms.date" content="2022-10-05">
+<meta name="author" content="Arden Chen, Jocelyn Lee, Abigaile Co, Kevin Wu, Lucas Canez">
+<meta name="dcterms.date" content="2026-10-16">
 
 <title>Analysis of class surveys</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
 }
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
 <script src="report_files/libs/clipboard/clipboard.min.js"></script>
-<script src="report_files/libs/quarto-html/quarto.js"></script>
+<script src="report_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="report_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="report_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="report_files/libs/quarto-html/popper.min.js"></script>
 <script src="report_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="report_files/libs/quarto-html/anchor.min.js"></script>
 <link href="report_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="report_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="report_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="report_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="report_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="report_files/libs/bootstrap/bootstrap-1fbf936f5d115924c956bdfb76a204f2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
-<body class="fullcontent">
+<body class="fullcontent quarto-light">
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 
@@ -106,7 +79,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">Analysis of class surveys</h1>
-<p class="subtitle lead">If you want a subtitle put it here</p>
 </div>
 
 
@@ -116,220 +88,867 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>List names here </p>
+             <p>Arden Chen, Jocelyn Lee, Abigaile Co, Kevin Wu, Lucas Canez </p>
           </div>
   </div>
     
     <div>
     <div class="quarto-title-meta-heading">Updated</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 5, 2022</p>
+      <p class="date">October 16, 2026</p>
     </div>
   </div>
+  
     
   </div>
   
 
+
 </header>
 
-<p>Use this as a template. Keep the headers and remove all other text. In all, your report can be quite short. When it is complete, render and then push changes to your team repository.</p>
-<div class="cell" data-hash="report_cache/html/unnamed-chunk-1_3a032c23479ef685915bb272d350a824">
 
-</div>
 <section id="executive-summary" class="level2">
 <h2 class="anchored" data-anchor-id="executive-summary">Executive summary</h2>
-<p>Write a one-paragraph abstract summarizing what you did and your findings. It need not be comprehensive; try to highlight the most important or interesting outcomes.</p>
+<p>We analyzed responses to the PSTAT 197A intake survey, completed by 55 students in Fall 2026, of whom 51 consented to share their background responses and 49 consented to both sections. We examined three questions: whether course history is associated with students’ self rated ability in programming, math, and stats; whether research experience or other background characteristics relate to a preference for industry over research projects; and what explains the timing of survey submissions. First, no course was significantly associated with overall self rated proficiency in a multiple regression model, a result that held across several model versions. The closest signals appeared in statistics, where students who had taken PSTAT 115 or PSTAT 131 more often rated themselves as advanced (p ≈ 0.06), though both estimates rested on small comparison groups. Second, students strongly preferred industry projects (32 of 49), but this preference was unrelated to research experience (Fisher’s exact test, p = 0.84), and predictive models using all background variables performed no better than chance. This suggests a class-wide interest in industry experience, possibly reflecting current job market pressures, rather than one tied to backgrounds. Third, submissions clustered around class announcements: the assignment day alone drew 15 responses, and about 78% of students had responded by the first reminder. Taken together, students’ self-reported backgrounds explained little about their perceived skills or preferences, while their behavior responded clearly to direct prompts. These conclusions are limited by the small sample, the self reported nature of all measures, and the similar course histories of most students, which left few meaningful comparison groups; our findings are therefore best viewed as exploratory.</p>
 </section>
 <section id="data-description" class="level2">
 <h2 class="anchored" data-anchor-id="data-description">Data description</h2>
-<p>Write a brief description of the dataset. Your description should cover how data were obtained, sample characteristics, and measurements taken. It does not need to be exhaustive, but sufficiently detailed to convey a clear high-level understanding of the dataset. You can utilize bullet points or tables if you feel it would help improve clarity.</p>
+<section id="how-the-data-were-obtained" class="level3">
+<h3 class="anchored" data-anchor-id="how-the-data-were-obtained">How the data were obtained</h3>
+<p>The data come from an intake survey given through Google Forms to students enrolled in PSTAT 197A, the UCSB data science capstone class for Fall Quarter 2026. The survey asked about students’ academic backgrounds and their interests related to future capstone projects. It was used to assign students to temporary project teams and to provide the dataset for this analysis.</p>
+<p>Every enrolled student was expected to complete the survey as coursework. It was due Sunday, October 4, 2026 at 11:59 p.m. Pacific time.</p>
+<p>The course instructor cleaned and de-identified the responses before sharing them. That process included:</p>
+<ul>
+<li>replacing names with artificial respondent IDs to anonymize participants</li>
+<li>removing free-text answers and individual timestamps</li>
+<li>combining the two research-experience questions into one variable</li>
+<li>standardizing spelling variants of major-specific names</li>
+<li>reporting demographics only as class-level counts (i.e.&nbsp;gender and major aren’t tied to individual answers)</li>
+</ul>
+<p>Other collection details:</p>
+<ul>
+<li><strong>Collection window:</strong> Responses were submitted between September 23 and October 5, 2026. Almost half (23 of 55) arrived on September 24–25, and the rest were spread across the following week and a half. 54 responses were on time and 1 was submitted after the deadline.</li>
+<li><strong>Consent:</strong> Students were asked separately whether their responses could be used for the background section and for the project-interest section. Of the 55 respondents, 49 consented to both, 2 consented only to the background section, and 4 consented to neither.</li>
+<li><strong>De-identification:</strong> Each response’s <code>response_id</code> doesn’t encode identity or submission order. Demographic information can’t be linked to individual responses.</li>
+</ul>
 </section>
-<section id="questions-of-interest" class="level2">
-<h2 class="anchored" data-anchor-id="questions-of-interest">Questions of interest</h2>
-<p>Indicate the questions your analysis addresses. These should map one-to-one to your findings. Don’t include questions you didn’t answer or questions you started with and refined later. If you would rather frame them as goals or tasks rather than questions that is okay; just modify the header appropriately. However you frame what you’ve done, you may only have two or three items; that is fine. Provide an itemized or numbered list so that the reader can easily identify your objectives.</p>
-<p>For example:</p>
-<blockquote class="blockquote">
-<p><em>We sought to understand the relationship between coursework preparation, self-assessed technical abilities, and comfort level with technical skills. We also sought to understand whether the relationships differed depending on having had prior research experience. Our analysis addressed three questions:</em></p>
-<ol type="1">
-<li><em>How should the coursework histories of students in the class be ordered from less preparation to extensive preparation?</em></li>
-<li><em>Is coursework preparation associated with increased self-assessed technical skill and comfort within the sample?</em></li>
-<li><em>Does prior research experience appear to be a substitute for coursework preparation with respect to self-assessed technical skill and comfort?</em></li>
-</ol>
-</blockquote>
-<p>Notice that the questions are precise but not overly technical.</p>
-</section>
-<section id="findings" class="level2">
-<h2 class="anchored" data-anchor-id="findings">Findings</h2>
-<p>Summarize your results. Don’t try to explain every step you took; focus instead on providing the main data analytic outputs – tables and figures – and explaining clearly what they show. Clarify any important decisions you made in obtaining them. You can display codes if you like but it is not necessary.</p>
-</section>
-<section id="useful-tips-remove-this-section" class="level2">
-<h2 class="anchored" data-anchor-id="useful-tips-remove-this-section">Useful tips (remove this section)</h2>
-<p>Due to the visual editor, most common needs for authoring can be met using menu items in the RStudio IDE. For a comprehensive guide to Quarto, see the <a href="https://quarto.org/docs/guide/">documentation</a>; consult the documentation for anything you can’t sort out in the IDE.</p>
-<section id="code-chunks" class="level3">
-<h3 class="anchored" data-anchor-id="code-chunks">Code chunks</h3>
-<p>Insert code chunks using the <em>Insert</em> drop-down menu or <code>ctrl + alt + I</code> . By default in this document, codes will not be shown but results will. If you want to change this behavior, add the chunk option <code>echo: true</code> as below.</p>
-<div class="cell" data-hash="report_cache/html/unnamed-chunk-2_3c4eb0cc9909a7c1a19ce56c3de2a3d7">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>my_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">animal =</span> <span class="fu">c</span>(<span class="st">'snake'</span>, <span class="st">'gecko'</span>),</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">threatening =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>))</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>my_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 2
-  animal threatening
-  &lt;chr&gt;  &lt;lgl&gt;      
-1 snake  TRUE       
-2 gecko  FALSE      </code></pre>
-</div>
-</div>
-<p>Code chunks will be executed in order when the document is rendered, so packages should be loaded at the very beginning of the document</p>
-</section>
-<section id="rendering-tables-in-markdown" class="level3">
-<h3 class="anchored" data-anchor-id="rendering-tables-in-markdown">Rendering tables in markdown</h3>
-<p>Several functions exist for converting dataframes to markdown tables for nice display. A simple one from the <code>knitr</code> package is <code>knitr::kable()</code> .</p>
-<div class="cell" data-hash="report_cache/html/unnamed-chunk-3_ba7196d961288bb877c4e37fd97e79ea">
-<div class="cell-output-display">
-<table class="table table-sm table-striped">
+<section id="data-files" class="level3">
+<h3 class="anchored" data-anchor-id="data-files">Data files</h3>
+<p>The two respondent-level files join on <code>response_id</code>, which gives 49 students who answered both sections.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">animal</th>
-<th style="text-align: left;">threatening</th>
+<th>File</th>
+<th>Unit</th>
+<th>Rows</th>
+<th>Contents</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">snake</td>
-<td style="text-align: left;">TRUE</td>
+<td><code>background-clean.csv</code></td>
+<td>Respondent</td>
+<td>51</td>
+<td>Self-rated skills, coursework, domain specialization, research experience</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">gecko</td>
-<td style="text-align: left;">FALSE</td>
+<td><code>interest-clean.csv</code></td>
+<td>Respondent</td>
+<td>49</td>
+<td>Project type, programming language, domain and methods interests</td>
+</tr>
+<tr class="odd">
+<td><code>class-summary.csv</code></td>
+<td>Category</td>
+<td>—</td>
+<td>Aggregate demographics for all 55 respondents (standing, gender, race, majors, consent)</td>
+</tr>
+<tr class="even">
+<td><code>response-timing.csv</code></td>
+<td>Date</td>
+<td>13</td>
+<td>Number of submissions per day</td>
+</tr>
+<tr class="odd">
+<td><code>survey-metadata.csv</code></td>
+<td>Variable</td>
+<td>—</td>
+<td>Data dictionary with question wording and coding notes</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sample-characteristics" class="level3">
+<h3 class="anchored" data-anchor-id="sample-characteristics">Sample characteristics</h3>
+<p>The 55 respondents were mostly seniors majoring in Statistics and Data Science.</p>
+<ul>
+<li><strong>Class standing:</strong> 89.1% seniors, 9.1% juniors, and 1 junior with senior-level credits.</li>
+<li><strong>Major:</strong> 94.5% Statistics and Data Science. One-third (18 students) reported a second major.</li>
+<li><strong>Gender:</strong> 54.5% male, 41.8% female, 1 another self-description, 1 preferred not to say.</li>
+<li><strong>Race/ethnicity:</strong> 67.3% Asian, 14.5% Caucasian, 10.9% multiracial, 1.8% American Indian or Alaska Native, 5.5% preferred not to say.</li>
+</ul>
+</section>
+<section id="measurements" class="level3">
+<h3 class="anchored" data-anchor-id="measurements">Measurements</h3>
+<p><strong>Background section (n = 51)</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Type</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Programming, math, and statistics proficiency</td>
+<td>Ordinal: beginner / intermediate / advanced, relative to a typical UCSB undergraduate</td>
+<td>Statistics was rated highest (65% advanced). Programming was mostly intermediate (63%), and only 3 students rated themselves beginners in anything.</td>
+</tr>
+<tr class="even">
+<td>Programming, math, and statistics comfort</td>
+<td>Ordinal, 1 (least comfortable) to 5 (most comfortable). No student chose 1.</td>
+<td>Mean comfort was 3.71 for programming, 3.94 for math, and 4.14 for statistics.</td>
+</tr>
+<tr class="odd">
+<td>Upper-division courses taken</td>
+<td>Ordinal: 3–5 / 6–8 / 9+</td>
+<td>59% reported 9+, 37% reported 6–8, and 4% reported 3–5.</td>
+</tr>
+<tr class="even">
+<td>Completed courses</td>
+<td>Multiple selection from a list</td>
+<td>Median of 7 courses selected. The most common were PSTAT 126 (50), PSTAT 120 (49), PSTAT 131 (46), PSTAT 122 (43), and CS 9 (40).</td>
+</tr>
+<tr class="odd">
+<td>Domain specialization</td>
+<td>Yes / No / Unsure</td>
+<td>18 Yes, 25 No, 8 Unsure</td>
+</tr>
+<tr class="even">
+<td>Supervised research experience</td>
+<td>Yes / No / Unsure, derived from two questions (data science and non-data-science research, excluding class and personal projects)</td>
+<td>23 Yes, 24 No, 4 Unsure</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Project-interest section (n = 49)</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Type</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Preferred project type</td>
+<td>Categorical: industry / research lab / no preference</td>
+<td>32 industry, 6 research lab, 11 no preference</td>
+</tr>
+<tr class="even">
+<td>Preferred programming language</td>
+<td>Categorical: Python / R / no preference</td>
+<td>22 Python, 11 R, 16 no preference</td>
+</tr>
+<tr class="odd">
+<td>Domains of interest</td>
+<td>Multiple selection (e.g., technology, biology, public health), with optional write-ins</td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td>Data science areas of interest</td>
+<td>Multiple selection (e.g., predictive modeling, deep learning, NLP)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="questions-of-interest" class="level2">
+<h2 class="anchored" data-anchor-id="questions-of-interest">Questions of interest</h2>
+<p>Our goal was to observe relationships between coursework preparation and perceived ability scores. Additionally, we wanted to find out if there was a relationship between project preference and having research experience. Finally, we wanted to see if we could explain spikes in survey submissions.</p>
+<p>Our specific questions are listed below:</p>
+<ol type="1">
+<li>Can a date variable explain spikes in when people submitted the survey?</li>
+<li>Is there any relationship between preferring an industry project with if you’ve done research or not?</li>
+<li><em>Which course (taken/not taken) has the most difference in perceived ability scores? (multivariable linear regression)</em> Does total amount of upper division classes taken affect perceived ability scores?</li>
+</ol>
+</section>
+<section id="findings" class="level2">
+<h2 class="anchored" data-anchor-id="findings">Findings</h2>
+<section id="survey-submission-timing" class="level3">
+<h3 class="anchored" data-anchor-id="survey-submission-timing">Survey submission timing</h3>
+<p>Background info: The survey was assigned at the first lecture (Thu Sep 24) and reminded in the next lecture, section and lecture (Tue Sep 29, Wed Sep 30, Thu Oct 1). It was due Sun Oct 4 at 11:59 PM.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-timing" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-timing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="report_files/figure-html/fig-timing-1.png" class="img-fluid figure-img" width="768">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-timing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Daily survey submissions. The class calendar comes from the course website, not the survey data.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Responses came in arguably two to three waves. Two of them happening on a day the survey was mentioned in class. The first class, Thursday, Sep.&nbsp;24, brought in 15 responses (close to 30% of the class). The following day, Friday Sep.&nbsp;25, brought on a new wave of responses, summoning 8 more responses. Hence, in roughly 24 hours since the assignment was announced, roughly 44% of the class had completed the survey. The next in-class session/reminder was on Tuesday, Sep.&nbsp;29, accumulating 10 more responses. This turned the total cumulative percentage of students who completed the survey to 78%. Students did not procrastinate and only 3 responses came in on the deadline (Sunday Oct 4), and one late response (Monday Oct 5). Both are left out of the analysis.</p>
+<p>To check whether responses could have been spread evenly across the window, we compared the daily counts with an even split of about 4.8 per day. We used a simulated p-value because the expected daily counts are too small for the standard chi-squared approximation.</p>
+<div class="cell">
+<div id="tbl-timing-model" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-timing-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Quasi-Poisson models of daily submissions, Sep 24 to Oct 4 (11 days). Estimates are rate ratios relative to days with no class contact; the intercept is responses per day on such a day. 95% intervals in parentheses.
+</figcaption>
+<div aria-describedby="tbl-timing-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 51%">
+<col style="width: 24%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Class contact only</th>
+<th style="text-align: left;">Adding weekend</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Baseline: responses per day</td>
+<td style="text-align: left;">3.29 (1.88, 5.27)</td>
+<td style="text-align: left;">4.67 (2.47, 7.88)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Assigned (Thu Sep 24)</td>
+<td style="text-align: left;">4.57 (1.95, 10.19)</td>
+<td style="text-align: left;">3.21 (1.44, 7.24)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">First reminder (Tue Sep 29)</td>
+<td style="text-align: left;">3.04 (1.11, 7.41)</td>
+<td style="text-align: left;">2.14 (0.85, 5.17)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Later reminders (Wed Sep 30, Thu Oct 1)</td>
+<td style="text-align: left;">0.76 (0.18, 2.27)</td>
+<td style="text-align: left;">0.54 (0.15, 1.53)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Weekend day</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">0.48 (0.18, 1.19)</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
+</figure>
+</div>
+</div>
+<p>Used two quasi-poisson models.The “class contact” column predicts daily responses from the type of day: day assigned, first reminder, later reminders, or no class contact. The second column “Adding weekend” is the same model plus a yes/no weekend term. Note, every other row besides “baseline” is a multiplier on that baseline.</p>
+<p>The class contact column identifies an “ordinary day” as a weekday or weekend with no class contact. A baseline tells us there is about ~3.3 responses on an ordinary day (no class contact). The Assigned row tells us there were times 4.6 more responses on the Assigned day. The conf interval being well above 1 means the spike is clear (if it includes 1, the data can’t rule out as “no effect”). The first reminder had 3.3 times more than an ordinary day. The later responses were no different from an ordinary day.</p>
+<p>Some of the days without class contact were weekends, which may be slow for other reasons. Hence, we re-fit the model with a weekend indicator. The assignment day held up (~3.2 times an ordinary weekday) however, the first reminder diminished to x2.1 times, and the conf interval now includes 1.</p>
+<p>We conclude that the survey announcement clearly drove the first wave. The first reminder probably helped, but these data can’t separate its effect from the usual weekday-to-weekend pattern. Later reminders added little.</p>
 </section>
-<section id="figures" class="level3">
-<h3 class="anchored" data-anchor-id="figures">Figures</h3>
-<p>To include any figures not generated by code chunks, use <em>Insert &gt; Figure / Image</em> or <code>![CAPTION](path/file.ext)</code> .</p>
-<p>Most of the time code chunks producing plots will render fine. However, to adjust sizing or alignment, use the chunk options <code>fig-width</code> and <code>fig-height</code> . Captions can be added with <code>fig-cap</code> .</p>
-<div class="cell" data-layout-align="left" data-hash="report_cache/html/unnamed-chunk-4_24a9f790de60f53c895719545e4e7cb7">
+<section id="project-preference" class="level3">
+<h3 class="anchored" data-anchor-id="project-preference">Project Preference</h3>
+<p>For our second question, we first performed exploratory data analysis on two variables of interest (<code>research</code>, <code>type</code>). These two variables are categorical, hence the use of bar charts and count tables in our analysis. We found that the data set was uneven in the distribution of those who preferred industry to lab research, but balanced in whether or not the students had research experience. The counts are available in the tables below:</p>
+<div class="cell">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-left">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">type</th>
+<th style="text-align: right;">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">both</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ind</td>
+<td style="text-align: right;">32</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">lab</td>
+<td style="text-align: right;">6</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">research</th>
+<th style="text-align: right;">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">No</td>
+<td style="text-align: right;">22</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Unsure</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Yes</td>
+<td style="text-align: right;">23</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Additionally, here are the bar graphs of their distributions:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
 <figure class="figure">
-<p><img src="report_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="384"></p>
-<p></p><figcaption class="figure-caption">A terrible plot.</figcaption><p></p>
+<p><img src="report_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="report_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-</section>
-<section id="links" class="level3">
-<h3 class="anchored" data-anchor-id="links">Links</h3>
-<p>To include any hyperlinks, use <code>[display text](url)</code> .</p>
+<p>For our bivariate analysis we made a contingency table and stacked bar chart to see if there was any noticeable change in likelihood for being interested in research. The figures are shown below:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">both</th>
+<th style="text-align: right;">ind</th>
+<th style="text-align: right;">lab</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">No</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Unsure</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Yes</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">3</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="report_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It’s hard to see if there’s a difference in proportion so we also made a proportion bar chart:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="report_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Based on this bar chart, doing research does not seem to significantly affect project preference. Something worth pointing out is that the proportion is very similar for those who did research across all project preference groups. However, for those who preferred industry, there was a lower proportion of people who definitively did research that is made up for by those who were unsure of if they did research or not.</p>
+<p>Next, we did hypothesis testing to see if there was any evidence to support a correlation between the two variables. Our null hypothesis is H0: project preference and research experience are independent. Our alternative hypothesis is HA: project preference and research experience are associated. Initially, we used Pearson’s Chi-squared test. However, since only 6 observations recorded that they preferred research, there was not enough observations per unique value for it to be a reliable test. Therefore, we went with Fisher’s Exact Test.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Fisher's Exact Test for Count Data
+
+data:  joint$research and joint$type
+p-value = 0.8424
+alternative hypothesis: two.sided</code></pre>
+</div>
+</div>
+<p>We obtained a p-value of 0.8424 &gt; 0.05. Since the p-value is higher than our rejection threshold, we fail to reject H0. There is not enough evidence to suggest that project preference is influenced by whether or not the person did research.</p>
+<p>Expanding on the second question,we next examined whether research experience combined with other background variables could predict an explicit preference for industry projects. To do this, we fit ridge logistic regression and a shallow classification tree. Among the 49 respondents, 32 preferred industry, while 17 preferred lab projects or reported no preference. Both models used the same predictors, balanced class weights, and a 0.5 classification threshold. Predictive performance was evaluated using five-fold cross-validation repeated ten times.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Model</th>
+<th style="text-align: right;">Accuracy</th>
+<th style="text-align: right;">Balanced accuracy</th>
+<th style="text-align: right;">AUC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Always predict Industry</td>
+<td style="text-align: right;">65.3%</td>
+<td style="text-align: right;">50.0%</td>
+<td style="text-align: right;">0.500</td>
+</tr>
+<tr class="even">
+<td>Ridge logistic regression</td>
+<td style="text-align: right;">36.3%</td>
+<td style="text-align: right;">33.9%</td>
+<td style="text-align: right;">0.335</td>
+</tr>
+<tr class="odd">
+<td>Shallow decision tree</td>
+<td style="text-align: right;">42.2%</td>
+<td style="text-align: right;">41.3%</td>
+<td style="text-align: right;">0.358</td>
+</tr>
+</tbody>
+</table>
+<p>The decision tree performed better than logistic regression across all three metrics, but neither model outperformed the majority-class baseline. Balanced accuracy remained below 50%, and AUC values below 0.5 indicated poor discrimination between the two preference groups. To evaluate model significance, we conducted 499 label permutations, refitting both models through the same validation procedure. The one-sided tests provided no evidence of above-null balanced accuracy (<span class="math inline">\(p = 0.972\)</span> for logistic regression; <span class="math inline">\(p = 0.872\)</span> for the tree). Both Benjamini–Hochberg-adjusted p-values were 0.972.</p>
+<p>The full-data fits showed several descriptive patterns. In the ridge model, uncertainty about prior research experience was associated with higher predicted industry preference relative to reporting no research experience, holding other predictors constant. Statistics proficiency had a negative coefficient. The tree first separated advanced statistics proficiency (<span class="math inline">\(n = 33\)</span>) from beginner or intermediate proficiency (<span class="math inline">\(n = 16\)</span>), then split on research experience and domain specialization. These fitted relationships did not translate into effective out-of-sample prediction. Other parameter settings were also explored without a consistent improvement over the baseline.</p>
+<p><img src="q2-ml-logistic.png" class="img-fluid"></p>
+<p><img src="q2-ml-tree.png" class="img-fluid"></p>
 </section>
 </section>
 
 </main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
-    }
-  });
-  clipboard.on('success', function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    setTimeout(function() {
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  });
-  function tippyHover(el, contentFn) {
-    const config = {
-      allowHTML: true,
-      content: contentFn,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start'
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
     };
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      return note.innerHTML;
-    });
-  }
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
         }
-        popup.appendChild(citeDiv);
-      });
-      return popup.innerHTML;
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
     });
-  }
-});
-</script>
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
 </div> <!-- /content -->
+
 
 
 
