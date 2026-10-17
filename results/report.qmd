@@ -401,9 +401,9 @@ background %>%
        title = 'Self-rated proficiency by number of upper-division courses') +
   theme_minimal()
 ```
-There looks to be some correlation with proficiency and number of upper div classes taken before the capstone series statistics had more advance scores, this makes sense since most of the class body are statistics majors. Programming had the only beginner responses among the lower end upper div classes taken this makes sense as there are not many programming-centric classes in the PSTAT department, most of R or python could have been learned throughout the major rather than in specific classes.
+There looks to be some correlation with proficiency and number of upper div classes taken before the capstone series, statistics had more advance scores, which makes sense considering most of the class body are statistics majors. Programming had the only beginner responses among the lower end upper div classes taken this makes sense as there are not many programming-centric classes in the PSTAT department, most of R or python could have been learned throughout the major rather than in specific classes.
 
-For the main analysis of analyzing what courses correlate to difference in perceived ability, we first looked at the course list. We dropped PSTAT 120, 122, and 126 as nearly all student took them, and so the , we also dropped courses taken by 3 or fewer students(LING 110, LING 104, GEOG 186, CS 130), as that many students wouldn't be a large enough sample size to produce some inference.
+For the main analysis of analyzing what courses correlate to difference in perceived ability, we first looked at the course list. We dropped PSTAT 120, 122, and 126 as nearly all students took them, we also dropped courses taken by 3 or fewer students(LING 110, LING 104, GEOG 186, CS 130), as that many students wouldn't be a large enough sample size to produce some inference.
 
 ```{r}
 course_wide <- course_long %>%
@@ -415,7 +415,7 @@ q1_data <- background %>%
   left_join(select(course_wide, response_id, all_of(keep_courses)),
             by = 'response_id')
 ```
-We decided to use regression as each course can become a binary explanatory variable; taken/not taken can become 0 and 1 respecively, so courses can be used directly as predictors of perceived ability. Additionally, multiple regression compares all courses at once: each coefficient is the difference in proficiency for taking that course, holding the other courses constant, which separates courses that are often taken together coefficients are on the same scale, so they can be ranked to see which course is associated with the largest difference even without statistical significance, the size and direction of the estimates give insight into which courses may relate to perceived ability, and which results rest on too few students to trust.
+We decided to use regression as each course can become a binary explanatory variable; taken/not taken can become 0 and 1 respectively. Additionally, multiple regression compares all courses at once: each coefficient is the difference in proficiency for taking that course, holding the other courses constant. Thus separating courses that are often taken together. Coefficients are on the same scale, so they can be ranked to see which course is associated with the largest difference even without statistical significance, the size and direction of the estimates give insight into which courses may relate to perceived ability, and which results rest on too few students to trust.
 
 ```{r}
 # fitting overall and individual skills into one outcome variable
@@ -458,4 +458,4 @@ coefs %>%
 ```
 Looking at the graph, we can see 3 categories for each prof. metric as well as a list of all relevant courses, and for each course there is a 95% percent confidence interval for their coefficients. Looking at significance, Statistics is the only panel with a hint of signal: PSTAT 115 (+0.53, p = 0.055) and PSTAT 131 (+0.44, p = 0.063). Both are above the 0.05 cutoff, and both rest on small comparison groups (7 takers for 115, 5 non-takers for 131), thus their intervals are wide. Programming: PSTAT 134 is highest among the well-sized courses (+0.30, p = 0.17). It's plausible that PSTAT134 has an effect, since it is one of the more applied courses, but the interval still does includes zero.
 
-Overall, there is no clear evidence that any single course, or the number of upper div courses,is associated with higher self-rated proficiency in this sample; the only hints are statistics specific (PSTAT 115, 131) and rest on small groups.
+Overall, there is no clear evidence that any single course, or the number of upper div courses, is associated with higher self-rated proficiency in this sample; the only hints are statistics specific (PSTAT 115, 131) and rest on small groups.
